@@ -39,12 +39,12 @@ ders.bean <- function(ps, dat) {
   ##hessian
   d2ldp2 <- -delta*((exp(-lambda)-1)/(1-p + p*exp(-lambda)))^2 - (1-delta)/p^2 
   d2ldpdlam <- -delta*(exp(-lambda))/((1-p) + p*exp(-lambda))^2
-  d2ldlam2 <- delta*p*(1-p*exp(-lambda))/(1-p + p*exp(-lambda))^2 - (1-delta)*(y/lambda^2)
-  d2pdb02 <- (T1/(1+T1))^2 - 2*(T1/(1+T1))^3
-  d2pdb12 <- x^2*((T1/(1+T1))^2 - 2*(T1/(1+T1))^3)
+  d2ldlam2 <- delta*p*(1-p)*exp(-lambda)/(1-p + p*exp(-lambda))^2 - (1-delta)*(y/lambda^2)
+  d2pdb02 <- (1-T1)*T1/(1+T1)^3
+  d2pdb12 <- x^2*(1-T1)*T1/(1+T1)^3
   d2pdb22 <- 0
   d2pdb32 <- 0  
-  d2pdb0db1 <- x*((T1/(1+T1))^2 - 2*(T1/(1+T1))^3)
+  d2pdb0db1 <- x*(1-T1)*T1/(1+T1)^3
   d2pdb0db2 <- 0
   d2pdb0db3 <- 0
   d2pdb1db2 <- 0
@@ -60,7 +60,6 @@ ders.bean <- function(ps, dat) {
   d2lamdb0db3 <- 0
   d2lamdb1db2 <- 0
   d2lamdb1db3 <- 0
-  d2lamdb2db3 <- 0
   d2lamdb2db3 <- x*T2
   
   
@@ -128,6 +127,6 @@ mles<-optim(c(0,0,0,0), function(u) -loglik(u, dat=dat1), hessian=TRUE)
 #### Try ders.newt ####
 source("EA 1/code/newtraph.R")
 x0<-c(8, -9, 7, -8)
-dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=x0)
+dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=mles$par, step.half = 100)
 
 
