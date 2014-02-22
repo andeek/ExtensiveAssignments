@@ -7,5 +7,7 @@
 *.gz
 Kaplan_Johnson_EA1-blx.bib
 framed.sty
+.Rhistory
+*.Rproj
 
 ./EA 1/cache
