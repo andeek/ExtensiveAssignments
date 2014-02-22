@@ -1,8 +1,11 @@
 ##rnw compiled files
-.tex
-.bbl
-.log
-.pdf
-.xml
-.gz
+*.tex
+*.bbl
+*.log
+*.pdf
+*.xml
+*.gz
 Kaplan_Johnson_EA1-blx.bib
+framed.sty
+
+./EA 1/cache
