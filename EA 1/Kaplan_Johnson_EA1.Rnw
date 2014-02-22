@@ -93,7 +93,7 @@ We can now find the Jacobian and the Hessian matrix to facilitate finding the ML
 \end{align*}
 for $k,l=0,1,2,3$.
 
-Now let $T_1 = \exp{\beta_0 + \beta_1 x_{ij}}$ and $T_2 = \exp{\beta_2 + \beta_3 x_{ij}}$. Then, the partial derivatives can be computed as follows.
+Now let $T_1 = \exp(\beta_0 + \beta_1 x_{ij})$ and $T_2 = \exp(\beta_2 + \beta_3 x_{ij})$. Then, the partial derivatives can be computed as follows.
 \begin{align*}
 \frac{\partial l_{ij}}{\partial p_{ij}} &=  \delta_{ij} \frac{\exp(-\lambda_{ij}) - 1}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} + (1-\delta_{ij}) \frac{1}{p_{ij}}   \\
 \frac{\partial l_{ij}}{\partial \lambda_{ij}} &=  \delta_{ij} \frac{-p_{ij}\exp(-\lambda_{ij})}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} + (1-\delta_{ij}) \left[\frac{y_{ij}}{\lambda_{ij}} - 1\right]  \\
@@ -101,9 +101,9 @@ Now let $T_1 = \exp{\beta_0 + \beta_1 x_{ij}}$ and $T_2 = \exp{\beta_2 + \beta_3
 \frac{\partial p_{ij}}{\partial \beta_1} &= x_{ij} \frac{T_1}{(1+ T_1)^2} \\
 \frac{\partial \lambda_{ij}}{\partial \beta_2} &= T_2\\
 \frac{\partial \lambda_{ij}}{\partial \beta_3} &= x_{ij} T_2\\
-\frac{\partial^2 l_{ij}}{\partial p_{ij}^2} &= \sum\limits_{i=1}^{n_j}\left\{ -\delta_{ij} \left(\frac{\exp(-\lambda_{ij}) - 1}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})}\right)^2 - (1-\delta_{ij}) \frac{1}{p_{ij}^2} \right\}\\
-\frac{\partial^2 l_{ij}}{\partial p_{ij} \partial \lambda_{ij}} &=  \delta_{ij} \left(\frac{-(\exp(-\lambda_{ij}) - 1)\exp(-\lambda_{ij})}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} - \frac{(\exp(-\lambda_{ij}) - 1)p_{ij}\exp(-\lambda_{ij})}{((1-p_{ij}) + p_{ij} \exp(-\lambda_{ij}))^2} \right)\\
-\frac{\partial^2 l_j}{\partial \lambda_{ij}^2} &=  \delta_{ij} \left[\frac{p_{ij}\exp(-\lambda_{ij})}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} -\left(\frac{p_{ij}\exp(-\lambda_{ij})}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})}\right)^2\right] - (1-\delta_{ij}) \left[\frac{y_{ij}}{\lambda_{ij}^2}\right] \\
+\frac{\partial^2 l_{ij}}{\partial p_{ij}^2} &=  -\delta_{ij} \left(\frac{\exp(-\lambda_{ij}) - 1}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})}\right)^2 - (1-\delta_{ij}) \frac{1}{p_{ij}^2}\\
+\frac{\partial^2 l_{ij}}{\partial p_{ij} \partial \lambda_{ij}} &=  -\delta_{ij} \frac{\exp(-\lambda_{ij})}{((1-p_{ij}) + p_{ij} \exp(-\lambda_{ij}))^2} \\
+\frac{\partial^2 l_j}{\partial \lambda_{ij}^2} &=  \delta_{ij} \frac{p_{ij}\exp(-\lambda_{ij}) - p_{ij}^2\exp(-\lambda_{ij})}{((1-p_{ij}) + p_{ij} \exp(-\lambda_{ij}))^2} - (1-\delta_{ij}) \left[\frac{y_{ij}}{\lambda_{ij}^2}\right] \\
 \frac{\partial^2 p_{ij}}{\partial \beta_0 \partial \beta_0} &= \left( \frac{T_1}{1 + T_1}\right)^2 - 2\left(\frac{T_1}{1 + T_1}\right)^3\\
 \frac{\partial^2 p_{ij}}{\partial \beta_0 \partial \beta_1} &= x_{ij}\left[ \left( \frac{T_1}{1 + T_1}\right)^2 - 2\left(\frac{T_1}{1 + T_1}\right)^3 \right]\\
 \frac{\partial^2 p_{ij}}{\partial \beta_1 \partial \beta_1} &= x_{ij}^2\left[ \left( \frac{T_1}{1 + T_1}\right)^2 - 2\left(\frac{T_1}{1 + T_1}\right)^3 \right]\\
