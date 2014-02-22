@@ -127,6 +127,6 @@ mles<-optim(c(0,0,0,0), function(u) -loglik(u, dat=dat1), hessian=TRUE)
 #### Try ders.newt ####
 source("EA 1/code/newtraph.R")
 x0<-c(8, -9, 7, -8)
-dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=mles$par, step.half = 100)
+dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=mles$par, step.half = 10)
 
 
