@@ -9,5 +9,7 @@ Kaplan_Johnson_EA1-blx.bib
 framed.sty
 .Rhistory
 *.Rproj
+Thumbs.db
 
-./EA 1/cache
+EA 1/cache
+.Rproj.user

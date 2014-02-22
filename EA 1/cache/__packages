@@ -1,9 +1,0 @@
-base
-datasets
-graphics
-grDevices
-knitr
-lubridate
-methods
-stats
-utils
