@@ -16,11 +16,10 @@ ders.bean <- function(ps, dat) {
   T2 <- exp(b2 + b3*x)  
   
   p <- T1/(1+T1)
-  lambda <- T2
+  lambda <- T2  
   
-  delta<-rep(0,length(y))
-  delta[y==0]<-1
-
+  delta <- as.numeric(y==0)
+  
   loglik <- sum(delta*log(1-p + p*exp(-lambda)) + (1-delta)*(log(p) - lfactorial(y) + y*log(lambda) - lambda))
   
   ##gradient
@@ -127,7 +126,7 @@ loglik <- function(par, dat){
 mles<-optim(c(0,0,0,0), function(u) -loglik(u, dat=dat1), hessian=TRUE)
 
 #### Try ders.newt ####
-source("./GitHub/ExtensiveAssignments/EA 1/code/newtraph_kaiser.R")
+source("EA 1/code/newtraph.R")
 x0<-c(8, -9, 7, -8)
 dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=x0)
 
