@@ -1,8 +1,8 @@
-newtraph <- function(ders, dat, x0, n.iter = 1000, step.half=10) {
+newtraph <- function(ders, dat, x0, n.iter = 1000) {
   ##function maximizes, for minization multiply likelihood by -1
 
   ##initialize critical values, initial values, etc.
-  crit <- c(1e-10, 1e-06, 1e-06, n.iter, step.half)
+  crit <- c(1e-10, 1e-06, 1e-06, n.iter, 10)
   stopped <- rep(0,3)
   curnt <- x0
   p<-length(x0)

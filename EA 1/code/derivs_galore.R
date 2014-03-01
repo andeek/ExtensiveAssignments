@@ -87,7 +87,7 @@ ders.bean <- function(ps, dat) {
 }
 
 #### Data ####
-dat<-read.table(file='./GitHub/ExtensiveAssignments/EA 1/data/greenbeandat.txt', header=TRUE)[,c(1,3,4,5)]
+dat<-read.table(file='EA 1/data/greenbeandat.txt', header=TRUE)[,c(1,3,4,5)]
 dat$date <-  ymd(as.character(dat$date))
 
 #### Sample Stores ####
@@ -96,8 +96,6 @@ samp_store<-function(n, seed, dat){
   s<-sample(unique(dat$store),n)
   dat[dat$store %in% s,]
 }
-
-dat1<-samp_store(1, 5, dat=dat)
 
 #### Cheat w/Optim ####
 
@@ -122,11 +120,71 @@ loglik <- function(par, dat){
   sum(delta*log(1-p + p*exp(-lambda)) + (1-delta)*(log(p) - lfactorial(y) + y*log(lambda) - lambda))
 }
 
-mles<-optim(c(0,0,0,0), function(u) -loglik(u, dat=dat1), hessian=TRUE)
 
 #### Try ders.newt ####
-source("EA 1/code/newtraph.R")
-x0<-c(8, -9, 7, -8)
-dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=mles$par, step.half = 10)
+source("EA 1/code/newtraph_kaiser.R")
+#x0<-c(8, -9, 7, -8)
+#dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=x0)
+
+library(plyr)
+library(reshape2)
+
+est <- dlply(dat, .(store), function(x) {
+  x0 <- optim(c(0,0,0,0), function(u) -loglik(u, dat=x))$par
+  tryCatch(newtraph(ders=ders.bean, dat=x, x0=x0), 
+           error=function(e) list(e))
+})
+
+##how many didn't work
+sum(ldply(est, function(x) sum(length(x) < 3))[,2])
+
+mles <- ldply(est, function(x) if(length(x) == 3) t(x[[1]]))
+
+ggplot(melt(mles, id.vars="store")) + 
+  geom_histogram(aes(x=value, y=..density..)) + 
+  facet_wrap(~variable)
+
+ggplot(dat1) + geom_line(aes(x=price, y=p*lambda)) + geom_point(aes(x=price, y=p*lambda)) + 
+  geom_line(aes(x=price, y=avg_mvm), data=ddply(dat1, .(price), summarise, avg_mvm=mean(mvm)), colour=I("red")) +
+  geom_point(aes(x=price, y=avg_mvm),data=ddply(dat1, .(price), summarise, avg_mvm=mean(mvm)), colour=I("red")) +
+  ylab("Marginal Expectation") + xlab("Price") +
+  ggtitle(sprintf("Store ID: %d", dat1$store[1]))
+
+
+
+plot_by_store <- function(store_id, data=dat) {
+  dat1 <- subset(data, store == store_id)
+  
+  est1 <- est[[as.character(dat1$store[1])]][[1]]
+  dat1$p <- exp(est1[1] + est1[2]*dat1$price)/(1 + exp(est1[1] + est1[2]*dat1$price))
+  dat1$lambda <- exp(est1[3] + est1[4]*dat1$price)
+  
+  distns <- ldply(mlply(unique(dat1$price), function(y) mdply(0:max(subset(dat1, price == y)$mvm), function(x) c(mvm=x, price=y, lik=exp(loglik(est1, dat=list(price=y, mvm=x)))))), function(x) x)
+  
+  gg <- ggplot(dat1) + geom_histogram(aes(x=mvm, y=..density..)) + 
+    geom_line(aes(x=mvm, y=lik), data=distns, colour=I("red")) + facet_wrap(~price, scales="free")  +
+    ggtitle(sprintf("Store ID: %d", dat1$store[1]))
+  
+  return(gg)
+}
+
+fit_plots <- mlply(1:length(est), function(x) {
+  if(length(est[[x]]) == 3) {
+    pdf("EA 1/figure/diagnostics_store.pdf")
+      plot_by_store(as.numeric(names(est)[x])) 
+      dev.off()
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
 
 
