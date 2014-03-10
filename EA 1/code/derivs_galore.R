@@ -163,16 +163,16 @@ plot_by_store <- function(store_id, data=dat) {
   
   gg <- ggplot(dat1) + geom_histogram(aes(x=mvm, y=..density..)) + 
     geom_line(aes(x=mvm, y=lik), data=distns, colour=I("red")) + facet_wrap(~price, scales="free")  +
-    ggtitle(sprintf("Store ID: %d", dat1$store[1]))
+    ggtitle(sprintf("Store ID: %d", store_id))
   
-  return(gg)
+  ggsave(sprintf("EA 1/figure/fit_store_%d.pdf", store_id), gg)
 }
 
-fit_plots <- mlply(1:length(est), function(x) {
+
+mlply(1:length(est), function(x) {
   if(length(est[[x]]) == 3) {
-    pdf("EA 1/figure/diagnostics_store.pdf")
-      plot_by_store(as.numeric(names(est)[x])) 
-      dev.off()
+    cat(sprintf("Counter: %d \r", x))
+    plot_by_store(as.numeric(names(est)[x]))     
   }
 })
 
