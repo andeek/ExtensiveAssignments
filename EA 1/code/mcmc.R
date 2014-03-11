@@ -168,20 +168,19 @@ proc.time() - ptm
 sum(diff(res1$beta3[,1])!=0)/500
 sum(diff(res1$beta2[,1])!=0)/500
 sum(diff(res1$beta1[,1])!=0)/500
-sum(diff(res1$beta0[,1])!=0)/500
+sum(diff(res1$beta0[,4])!=0)/500
+
+qplot(1:500, res1$beta0[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:500, res1$beta1[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:500, res1$beta2[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:500, res1$beta3[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
 
 
-qplot(1:100, res1$beta0[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(1:100, res1$beta1[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(1:100, res1$beta2[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(1:100, res1$beta3[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+
+
 
 res2 = run_mcmc(alpha0=runif(1,0,20), beta0=runif(1,0,2))
 res3 = run_mcmc(alpha0=runif(1,0,20), beta0=runif(1,0,2))
-
-
-
-
 
 #### OLD ####
 run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tune=TRUE, b0=100, b1=100, b2=100, b3=100) {
