@@ -64,3 +64,18 @@ g <- gtable_add_grob(g, ax, pp$t, length(g$widths) - 1, pp$b)
 
 # draw it
 grid.draw(g)
+
+# simplified plot
+stores4_m <- merge(x=stores4, y=ddply(stores4, .(store), summarise, max_mvm = max(mvm)), all.x = TRUE, by="store")
+p1 <- ggplot(stores4_m, ) + 
+  xlab("Date") + ylab("Scaled Movement vs. Price") + 
+  geom_line(aes(date, mvm/max_mvm, colour="line")) + 
+  geom_point(aes(date, price, colour="point")) +
+  theme_bw() + facet_wrap(~store, ncol=2) +
+  scale_colour_manual(values=c("blue", "red"),
+                      labels=c("Scaled Movement", "Price"),
+                      name="") +
+  theme(legend.position="bottom")
+
+
+
