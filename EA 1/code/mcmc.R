@@ -157,7 +157,6 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
     sigma2 <- sample_sigma(dat, beta2, a, b)
     sigma3 <- sample_sigma(dat, beta3, a, b)
 
-    
     beta0_keep[i,] = beta0
     beta1_keep[i,] = beta1
     beta2_keep[i,] = beta2
@@ -170,9 +169,6 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
   }
   return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep))
 }
-
-
-
 
 #### Data ####
 dat<-read.table(file='EA 1/data/greenbeandat.txt', header=TRUE)[,c(1,3,4,5)]
@@ -193,7 +189,7 @@ set.seed(1)
 ptm <- proc.time()
 res1 = run_mcmc(dat=stores4, beta0=runif(4,0,10), beta1=runif(4,0,10), beta2=runif(4,0,10), beta3=runif(4,0,10),
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10,
-                n.reps=5000, a=10, b=10)
+                n.reps=1000, a=100, b=100)
 proc.time() - ptm
 #user  system elapsed 
 #244.35    0.79  254.80
@@ -206,23 +202,17 @@ res3 = run_mcmc(dat=stores4, beta0=runif(4,-10,10), beta1=runif(4,-10,10), beta2
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10,
                 n.reps=5000, a=10, b=10)
 
+
 #### Check some acceptance probabilities? ####
-sum(diff(res1$beta3[,1])!=0)/5000
-sum(diff(res1$beta2[,1])!=0)/5000
-sum(diff(res1$beta1[,1])!=0)/5000
-sum(diff(res1$beta0[,1])!=0)/5000
+sum(diff(res1$beta3[,1])!=0)/1000
+sum(diff(res1$beta2[,1])!=0)/1000
+sum(diff(res1$beta1[,1])!=0)/1000
+sum(diff(res1$beta0[,1])!=0)/1000
 
-qplot(1:5000, res1$beta0[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(1:5000, res1$beta1[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
-qplot(1:5000, res1$beta2[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
-qplot(1:5000, res1$beta3[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
-
-
-
-
-
-res2 = run_mcmc(alpha0=runif(1,0,20), beta0=runif(1,0,2))
-res3 = run_mcmc(alpha0=runif(1,0,20), beta0=runif(1,0,2))
+qplot(1:1000, res1$beta0[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:1000, res1$beta1[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
+qplot(1:1000, res1$beta2[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
+qplot(1:1000, res1$beta3[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 
 #### OLD ####
 run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tune=TRUE, b0=100, b1=100, b2=100, b3=100) {
