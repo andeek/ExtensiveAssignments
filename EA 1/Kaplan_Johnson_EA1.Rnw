@@ -4,7 +4,6 @@
 \usepackage{amssymb,amsmath,amsthm} 
 \usepackage[backend=bibtex, natbib=true]{biblatex}
 \usepackage[toc,page]{appendix}
-\addbibresource{../references/references.bib}
 
 \usepackage{color}
 \newcommand{\ak}[1]{{\color{magenta} #1}}
@@ -27,14 +26,19 @@
 opts_chunk$set(size='footnotesize')
 @
 
-<<load-data, echo=FALSE, warning=FALSE, error=FALSE, cache=TRUE>>=
+<<libraries, echo=FALSE>>=
 library(lubridate)
+library(scales)
+@
 
+<<load-data, echo=FALSE, warning=FALSE, error=FALSE, cache=TRUE>>=
 dat <- read.table("data/greenbeandat.txt", header=TRUE)
 dat$date <-  ymd(as.character(dat$date))
 @
 
 \section{Introduction}
+<<intro, child='parts/introduction.Rnw', eval=TRUE>>=
+@
 
 \section{Exploratory Analysis}
 
