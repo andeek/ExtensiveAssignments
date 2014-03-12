@@ -1,0 +1,35 @@
+<<eda, echo=FALSE>>=
+source("../code/eda_plots.r")
+@
+
+Prior to formulating models for green bean sales, we looked at some descriptive as well as graphical summaries of our data.
+<<summary, results='asis', echo=FALSE>>=
+print(xtable(summary(dat), caption='Summary of green bean data. The data was collected between October 2005 and September 2007. The lowest price for green beans was \\$0.07 per unit, while the maximum was \\$0.95 per unit.', label='tab:summary'), include.rownames=FALSE )
+@
+This overall summary of the data set in Table~\ref{tab:summary} isn't very useful, because we are primarily interested in modeling at the store level. Instead, we can look at some summaries store by store.
+<<store-summary-count-1, fig.pos='H', fig.cap='Summary of number of observations for each store.', out.width='.49\\textwidth', message=FALSE, echo=FALSE, fig.height=4, fig.show='hold'>>=
+plot_nrow_hist
+plot_nsales_hist
+@
+It's clear from Figure~\ref{feg:store-summary-count-1} that there are a few stores with a very small number of observations. These may be stores that we wish to exclude from the analysis. There are also stores with a very low number of green beans sold which we may want to exclude. These stores are displayed in Table~\ref{tab:exclude}.
+<<store-summary-count-2, results='asis', echo=FALSE>>=
+exclude <- head(dat_store_s[with(dat_store_s, order(count)),])
+exclude <- merge(exclude, head(dat_store_s[with(dat_store_s, order(num_sales)),]), all=TRUE)
+names(exclude) <- c("Store", "Num. Observations", "Units Sold")
+print(xtable(exclude, caption='Stores with a small number of observations that may need to be excluded from analysis.', label='tab:exclude'), include.rownames=FALSE )
+@
+Now let's take a look at the distributions of price and movement of green beans.
+<<store-summary-density, fig.pos='H', fig.cap='Densities of movement and price for each store.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=3>>=
+plot_density
+@
+From Figure~\ref{fig:store-summary-density}, we can see that mvm has some stores with extreme (over 1000) sales one a single day, but the vast majority of sales are under 100 in a day. Also, from the figure we can see that price has a few commonalities around \$0.50 and \$0.70 per unit. To get a clearer picture, we randomly sample four stores and look at some more detailed explorations.
+<<4-store-hist, fig.pos='H', fig.cap='Histograms of green bean sales for four randomly selected stores.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4>>=
+plot_hist_4
+@
+For these stores, it looks like there are a lot of days observed with zero green bean sales relative to the spread of the data (for this to fit in a Poisson model). We can also look for a potential relationship between sales and price of green beans in these stores.
+<<4-store-relationship, fig.pos='H', fig.cap='Histograms of green bean sales for four randomly selected stores.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4, fig.show='hold'>>=
+plot_price_mvm_4
+plot_four_stores
+@
+From Figure~\ref{fig:4-store-relationship}, it does appear that there is some sort of relationship between price and quantity of sales for green beans in these store, but it is not entirely easy to see what that relationship is. We will attempt to model this relationship in three ways in the next section.
+

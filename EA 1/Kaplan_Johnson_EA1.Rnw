@@ -23,16 +23,28 @@
 
 \maketitle
 <<options, echo=FALSE>>=
-opts_chunk$set(size='footnotesize')
+opts_chunk$set(size='footnotesize', fig.align='center')
 @
 
-<<libraries, echo=FALSE>>=
+<<libraries, echo=FALSE, message=FALSE, warning=FALSE>>=
 library(lubridate)
 library(scales)
+library(xtable)
+library(plyr)
+library(ggplot2)
+library(reshape2)
+
+
+theme_set(theme_bw(base_family="serif"))
 @
 
 <<load-data, echo=FALSE, warning=FALSE, error=FALSE, cache=TRUE>>=
 dat <- read.table("data/greenbeandat.txt", header=TRUE)
+
+## remove unused columns
+dat <- dat[,-c(2, 6, 7)]
+
+## force date to useful date format
 dat$date <-  ymd(as.character(dat$date))
 @
 
@@ -41,8 +53,12 @@ dat$date <-  ymd(as.character(dat$date))
 @
 
 \section{Exploratory Analysis}
+<<intro, child='parts/eda.Rnw', eval=TRUE>>=
+@
 
-\section{Models}
+\section{Model Formulation}
+<<models, child='parts/models.Rnw', eval=TRUE>>=
+@
 
 \section{Results}
 

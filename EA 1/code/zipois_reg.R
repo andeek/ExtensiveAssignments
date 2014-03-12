@@ -1,6 +1,3 @@
-#### Libraries ####
-library(lubridate)
-
 #### Function for newtraph ####
 ders.bean <- function(ps, dat) {
   ##likelihood
@@ -98,7 +95,6 @@ samp_store<-function(n, seed, dat){
 }
 
 #### Cheat w/Optim ####
-
 loglik <- function(par, dat){
   b0<-par[1]
   b1<-par[2]
@@ -122,12 +118,7 @@ loglik <- function(par, dat){
 
 
 #### Try ders.newt ####
-source("EA 1/code/newtraph_kaiser.R")
-#x0<-c(8, -9, 7, -8)
-#dat1.newt<-newtraph(ders=ders.bean, dat=dat1, x0=x0)
-
-library(plyr)
-library(reshape2)
+source("newtraph_kaiser.R")
 
 est <- dlply(dat, .(store), function(x) {
   x0 <- optim(c(0,0,0,0), function(u) -loglik(u, dat=x))$par

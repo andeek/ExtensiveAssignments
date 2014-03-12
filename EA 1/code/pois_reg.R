@@ -1,14 +1,3 @@
-#### Libraries ####
-library(lubridate)
-library(reshape)
-library(plyr)
-library(ggplot2)
-theme_set(theme_bw(base_family="serif"))
-
-#### Data ####
-dat<-read.table(file='./GitHub/ExtensiveAssignments/EA 1/data/greenbeandat.txt', header=TRUE)[,c(1,3,4,5)]
-dat$date <-  ymd(as.character(dat$date))
-
 #### Sample Stores ####
 samp_store<-function(n, seed, dat){
   set.seed(seed)
