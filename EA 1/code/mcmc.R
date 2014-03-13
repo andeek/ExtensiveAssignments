@@ -196,7 +196,6 @@ res3 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=run
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
                 n.reps=1000, a=1, b=1)
 
-
 #### Check some acceptance probabilities? ####
 sum(diff(res1$beta3[,1])!=0)/1000
 sum(diff(res1$beta2[,1])!=0)/1000
@@ -211,6 +210,14 @@ qplot(1:1000, res1$sigma[,1], geom="line", xlab="iteration", ylab=expression(bet
 qplot(1:1000, res1$sigma[,2], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,3], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+
+
+beta0.list = mcmc.list(mcmc(res1$sigma[,4]),
+                       mcmc(res2$sigma[,4]),
+                       mcmc(res3$sigma[,4]))
+
+plot(beta0.list, smooth=F, density=F, auto.layout=F, main="beta", lwd=2, ylab="iterations")
+
 
 #### OLD ####
 run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tune=TRUE, b0=100, b1=100, b2=100, b3=100) {
