@@ -1,6 +1,10 @@
 "newtraph" <- 
-function(ders, dat, x0)
+function(ders, dat, x0, ...)
 {
+    args <- as.list(substitute(list(...)))[-1L]
+    ders <- function()
+    
+    if(extra) {}
 # 	cat("While N-R may be used for either minimization or\nmaximization")
 # 	cat("The checks for progress in this function are written")
 # 	cat("for maximization.  If you want to minimize, chage your")
@@ -75,7 +79,7 @@ function(ders, dat, x0)
 # 	cat("(i.e., Inverse of Negative Hessian)", fill = T)
 # 	cat("", fill = T)
 # 	print(fInf)
-	res<-list(new,flogL,fInf)
+	res<-list(new,flogL,fInf, extra)
         return(res)
 }
 
