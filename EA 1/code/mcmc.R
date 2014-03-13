@@ -81,12 +81,17 @@ sample_beta3 <- function(y, x, beta0, beta1, beta2, beta3, sigma3, sigma03, b3) 
   return(ifelse(log(runif(1))<lrho, beta3_star, beta3))
 }
 
+# sample_sigma<-function(z, beta, a0, g0){
+#   a<-length(z)*(a0+3/2)-1
+#   b<-sum(beta^2)/2 + g0
+#   sqrt(1/rgamma(1, a, b))
+# }
+
 sample_sigma<-function(z, beta, a0, g0){
-  a<-length(z)*(a0+3/2)+1
+  a<-length(z)*(a0+3/2)-1
   b<-sum(beta^2)/2 + g0
   sqrt(1/rgamma(1, a, b))
 }
-
 
 run_mcmc = function(dat, beta0, beta1, beta2, beta3,
                             sigma0, sigma1, sigma2, sigma3, s=1, 
@@ -177,47 +182,45 @@ samp_store<-function(n, seed, dat){
 
 #### Plot Price vs. Volume ####
 ## Sample 4 stores
-stores4<-samp_store(4, 2, dat=dat)
+stores10<-samp_store(10, 2, dat=dat)
 
 set.seed(1)
 ptm <- proc.time()
-res1 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
-                n.reps=1000, a=2, b=2)
+res1 = run_mcmc(dat=stores10, beta0=runif(10,-2,2), beta1=runif(10,-2,2), beta2=runif(10,-2,2), beta3=runif(10,-2,2),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=10,
+                n.reps=1000, a=0.5, b=0.5)
 proc.time() - ptm
 #user  system elapsed 
 #244.35    0.79  254.80
 
-res2 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
-                n.reps=1000, a=1, b=1)
+res2 = run_mcmc(dat=stores10, beta0=runif(10,-2,2), beta1=runif(10,-2,2), beta2=runif(10,-2,2), beta3=runif(10,-2,2),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=10,
+                n.reps=1000, a=0.5, b=0.5)
 
-res3 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
-                n.reps=1000, a=1, b=1)
+res3 = run_mcmc(dat=stores10, beta0=runif(10,-2,2), beta1=runif(10,-2,2), beta2=runif(10,-2,2), beta3=runif(10,-2,2),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=10,
+                n.reps=1000, a=0.5, b=0.5)
 
 #### Check some acceptance probabilities? ####
-sum(diff(res1$beta3[,1])!=0)/1000
-sum(diff(res1$beta2[,1])!=0)/1000
-sum(diff(res1$beta1[,1])!=0)/1000
-sum(diff(res1$beta0[,1])!=0)/1000
+sum(diff(res1$beta3[,1])!=0)/2000
+sum(diff(res1$beta2[,1])!=0)/2000
+sum(diff(res1$beta1[,1])!=0)/2000
+sum(diff(res1$beta0[,1])!=0)/2000
 
 qplot(1:1000, res1$beta0[1:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
 qplot(250:1000, res1$beta1[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
 qplot(250:1000, res1$beta2[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
-qplot(250:1000, res1$beta3[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
-qplot(1:1000, res1$sigma[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(500:2000, res3$beta3[500:2000,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(500:2000, res2$sigma[500:2000,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,2], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,3], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 
-
-beta0.list = mcmc.list(mcmc(res1$sigma[,4]),
-                       mcmc(res2$sigma[,4]),
-                       mcmc(res3$sigma[,4]))
+beta0.list = mcmc.list(mcmc(res1$beta2[250:1000,5]),
+                       mcmc(res2$beta2[250:1000,5]),
+                       mcmc(res3$beta2[250:1000,5]))
 
 plot(beta0.list, smooth=F, density=F, auto.layout=F, main="beta", lwd=2, ylab="iterations")
-
 
 #### OLD ####
 run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tune=TRUE, b0=100, b1=100, b2=100, b3=100) {
@@ -281,6 +284,4 @@ run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tu
   return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=c(sigma0, sigma1, sigma2, sigma3)))
 }
 
-
-
-
+2^2/(.5^2 * 1.5^2)
