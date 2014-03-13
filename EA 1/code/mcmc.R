@@ -12,28 +12,28 @@ cond_b0 <- function(beta0, beta1, beta2, beta3, sigma0, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(y-beta0)^2/sigma0^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(beta0)^2/sigma0^2)
 }
 
 cond_b1 <- function(beta0, beta1, beta2, beta3, sigma1, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(y-beta1)^2/sigma1^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(beta1)^2/sigma1^2)
 }
 
 cond_b2 <- function(beta0, beta1, beta2, beta3, sigma2, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(y-beta2)^2/sigma2^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(beta2)^2/sigma2^2)
 }
 
 cond_b3 <- function(beta0, beta1, beta2, beta3, sigma3, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(y-beta3)^2/sigma3^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(beta3)^2/sigma3^2)
 }
 
 #### Sampling Functions ####
@@ -81,25 +81,19 @@ sample_beta3 <- function(y, x, beta0, beta1, beta2, beta3, sigma3, sigma03, b3) 
   return(ifelse(log(runif(1))<lrho, beta3_star, beta3))
 }
 
-sample_sigma<-function(dat, beta, a0, g0){
-  z<-unique(dat$store)
-  y_stand<-c()
-  for(i in 1:length(z)){
-    y_stand<-c(y_stand, (dat[dat$store==z[i],]$mvm - beta[i])^2)
-  }
-  a<-length(dat$mvm)*(a0+1)+1
-  b<-sum(y_stand)/2 + g0
-  
+sample_sigma<-function(z, beta, a0, g0){
+  a<-length(z)*(a0+3/2)+1
+  b<-sum(beta^2)/2 + g0
   sqrt(1/rgamma(1, a, b))
 }
 
 
 run_mcmc = function(dat, beta0, beta1, beta2, beta3,
-                            sigma0, sigma1, sigma2, sigma3, 
+                            sigma0, sigma1, sigma2, sigma3, s=1, 
                             n.reps=10, b0=100, b1=100, b2=100, b3=100, a=.5, b=.5, 
                             counter=TRUE, tune=TRUE){
   z=unique(dat$store)
-  sigma00 = sigma01 = sigma02 = sigma03 = 1
+  sigma00 = sigma01 = sigma02 = sigma03 = s
   beta0_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=length(z))
   beta0_keep[1,] <- beta0
   beta1_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=length(z))
@@ -152,10 +146,10 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
       }
     }
     
-    sigma0 <- sample_sigma(dat, beta0, a, b)
-    sigma1 <- sample_sigma(dat, beta1, a, b)
-    sigma2 <- sample_sigma(dat, beta2, a, b)
-    sigma3 <- sample_sigma(dat, beta3, a, b)
+    sigma0 <- sample_sigma(z, beta0, a, b)
+    sigma1 <- sample_sigma(z, beta1, a, b)
+    sigma2 <- sample_sigma(z, beta2, a, b)
+    sigma3 <- sample_sigma(z, beta3, a, b)
 
     beta0_keep[i,] = beta0
     beta1_keep[i,] = beta1
@@ -187,20 +181,20 @@ stores4<-samp_store(4, 2, dat=dat)
 
 set.seed(1)
 ptm <- proc.time()
-res1 = run_mcmc(dat=stores4, beta0=runif(4,0,10), beta1=runif(4,0,10), beta2=runif(4,0,10), beta3=runif(4,0,10),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10,
-                n.reps=1000, a=100, b=100)
+res1 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
+                n.reps=1000, a=2, b=2)
 proc.time() - ptm
 #user  system elapsed 
 #244.35    0.79  254.80
 
-res2 = run_mcmc(dat=stores4, beta0=runif(4,-10,0), beta1=runif(4,-10,0), beta2=runif(4,-10,0), beta3=runif(4,-10,0),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10,
-                n.reps=5000, a=10, b=10)
+res2 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
+                n.reps=1000, a=1, b=1)
 
-res3 = run_mcmc(dat=stores4, beta0=runif(4,-10,10), beta1=runif(4,-10,10), beta2=runif(4,-10,10), beta3=runif(4,-10,10),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10,
-                n.reps=5000, a=10, b=10)
+res3 = run_mcmc(dat=stores4, beta0=runif(4,-4,4), beta1=runif(4,-4,4), beta2=runif(4,-4,4), beta3=runif(4,-4,4),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=5,
+                n.reps=1000, a=1, b=1)
 
 
 #### Check some acceptance probabilities? ####
@@ -209,10 +203,14 @@ sum(diff(res1$beta2[,1])!=0)/1000
 sum(diff(res1$beta1[,1])!=0)/1000
 sum(diff(res1$beta0[,1])!=0)/1000
 
-qplot(1:1000, res1$beta0[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(1:1000, res1$beta1[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
-qplot(1:1000, res1$beta2[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
-qplot(1:1000, res1$beta3[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(1:1000, res1$beta0[1:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(250:1000, res1$beta1[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
+qplot(250:1000, res1$beta2[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
+qplot(250:1000, res1$beta3[250:1000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(1:1000, res1$sigma[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(1:1000, res1$sigma[,2], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(1:1000, res1$sigma[,3], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
+qplot(1:1000, res1$sigma[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 
 #### OLD ####
 run_mcmc_nosigma = function(dat, beta0, beta1, beta2, beta3, s=10, n.reps=10, tune=TRUE, b0=100, b1=100, b2=100, b3=100) {
