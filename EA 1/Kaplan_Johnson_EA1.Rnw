@@ -64,7 +64,7 @@ dat$date <-  ymd(as.character(dat$date))
 
 \section{Diagnostics}
 
-\section{Conclusion}
+\section{Conclusion} 
 
 \begin{appendices}
 \section{Appendix: Poisson Model}

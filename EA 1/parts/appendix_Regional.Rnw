@@ -1,5 +1,45 @@
 \subsection{Full Conditional Distributions}
 
+\subsubsection{Joint Distribution}
+
+\subsubsection{Full Conditional for $\beta_{0j},$ $j = 1,...,J$}
+\begin{align*}
+  p(\beta_{0j}|\beta_{0,-j}, &\boldsymbol{\beta}, \sigma_0, \sigma_1, \sigma_2, \sigma_3)\\
+  &= p(\beta_{0j}| \mathbf{\beta_1}, \mathbf{\beta_2}, \mathbf{\beta_3}, \sigma_0) \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - p_{ij} + p_{ij} \text{exp}\{-\lambda_{ij}\} \right \rbrack^{\delta_i}\left \lbrack \frac{p_{ij}}{y_{ij}!} \lambda_{ij}^{y_{ij}} \text{exp}\{-\lambda_{ij}\}\right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{0j}}{2\sigma^2_0}\right \} \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{0j}}{2\sigma^2_0}\right \} \\
+\end{align*}
+\subsubsection{Full Conditional for $\beta_{1j},$ $j = 1,...,J$}
+\begin{align*}
+  p(\beta_{1j}|\beta_{1,-j}, &\boldsymbol{\beta}, \sigma_0, \sigma_1, \sigma_2, \sigma_3)\\
+  &= p(\beta_{1j}| \mathbf{\beta_0}, \mathbf{\beta_2}, \mathbf{\beta_3}, \sigma_1) \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - p_{ij} + p_{ij} \text{exp}\{-\lambda_{ij}\} \right \rbrack^{\delta_i}\left \lbrack \frac{p_{ij}}{y_{ij}!} \lambda_{ij}^{y_{ij}} \text{exp}\{-\lambda_{ij}\}\right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{1j}}{2\sigma^2_1}\right \} \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{1j}}{2\sigma^2_1}\right \} \\
+\end{align*}
+\subsubsection{Full Conditional for $\beta_{2j},$ $j = 1,...,J$}
+\begin{align*}
+  p(\beta_{2j}|\beta_{2,-j}, &\boldsymbol{\beta}, \sigma_0, \sigma_1, \sigma_2, \sigma_3)\\
+  &= p(\beta_{2j}| \mathbf{\beta_0}, \mathbf{\beta_1}, \mathbf{\beta_3}, \sigma_2) \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - p_{ij} + p_{ij} \text{exp}\{-\lambda_{ij}\} \right \rbrack^{\delta_i}\left \lbrack \frac{p_{ij}}{y_{ij}!} \lambda_{ij}^{y_{ij}} \text{exp}\{-\lambda_{ij}\}\right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{1j}}{2\sigma^2_1}\right \} \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}^{y_ij} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{2j}}{2\sigma^2_2}\right \} \\
+   &= \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp} \{y_{ij}(\beta_{2j} + \beta_{3j}x_{ij})-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{2j}}{2\sigma^2_2}\right \} \\
+\end{align*}
+\subsubsection{Full Conditional for $\beta_{3j},$ $j = 1,...,J$}
+\begin{align*}
+  p(\beta_{3j}|\beta_{3,-j}, &\boldsymbol{\beta}, \sigma_0, \sigma_1, \sigma_2, \sigma_3)\\
+  &= p(\beta_{3j}| \mathbf{\beta_0}, \mathbf{\beta_1}, \mathbf{\beta_2}, \sigma_3) \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - p_{ij} + p_{ij} \text{exp}\{-\lambda_{ij}\} \right \rbrack^{\delta_i}\left \lbrack \frac{p_{ij}}{y_{ij}!} \lambda_{ij}^{y_{ij}} \text{exp}\{-\lambda_{ij}\}\right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{1j}}{2\sigma^2_1}\right \} \\
+  &\propto \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}^{y_ij} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{2j}}{2\sigma^2_2}\right \} \\
+   &= \prod_{i=1}^{n_i} \left \lbrack 1 - \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} + \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp}\{-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{\delta_i} \\
+  &\times \left \lbrack \frac{\text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}}{1 + \text{exp}\{\beta_{0j} + \beta_{1j}x_{ij}\}} \text{exp} \{y_{ij}(\beta_{2j} + \beta_{3j}x_{ij})-\text{exp} \{\beta_{2j} + \beta_{3j}x_{ij}\}\} \right \rbrack^{1-\delta_i} \text{exp}\left \{\frac{-\beta^2_{3j}}{2\sigma^2_3}\right \} \\
+\end{align*}
+
+
 \subsection{Code}
 <<code_appendix_regional, echo=FALSE>>=
 read_chunk("../code/mcmc_clean.R", labels = 'mcmc_clean-source')
