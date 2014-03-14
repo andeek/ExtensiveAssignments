@@ -189,21 +189,20 @@ samp_store<-function(n, seed, dat){
 ## Sample 4 stores
 stores4<-samp_store(4, 2, dat=dat_bean)
 
-dat=stores4
-set.seed(1)
-ptm <- proc.time()
-res1 = run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
+dat <- dat_bean
+
+res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
                 n.reps=1500, a=0.5, b=0.5)
-proc.time() - ptm
+
 #user  system elapsed 
 #244.35    0.79  254.80
 
-res2 = run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
+res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
                 n.reps=1500, a=0.5, b=0.5)
 
-res3 = run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
+res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
                 n.reps=1500, a=0.5, b=0.5)
 
