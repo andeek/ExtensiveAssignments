@@ -73,6 +73,9 @@ dat$date <-  ymd(as.character(dat$date))
 \section{Appendix: Zero-Infated Poisson Model}
 <<appendix_ZIP, child='parts/appendix_ZIP.Rnw', eval=TRUE>>=
 @
+\section{Appendix: Regional Model}
+<<appendix_Regional, child='parts/appendix_Regional.Rnw', eval=TRUE>>=
+@
 \end{appendices}
 
 \end{document}

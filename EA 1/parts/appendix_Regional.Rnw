@@ -1,0 +1,8 @@
+\subsection{Full Conditional Distributions}
+
+\subsection{Code}
+<<code_appendix_regional, echo=FALSE>>=
+read_chunk("../code/mcmc_clean.R", labels = 'mcmc_clean-source')
+@
+<<mcmc_clean-source, eval=FALSE>>=
+@
