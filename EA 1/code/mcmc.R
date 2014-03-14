@@ -81,15 +81,9 @@ sample_beta3 <- function(y, x, beta0, beta1, beta2, beta3, sigma3, sigma03, b3) 
   return(ifelse(log(runif(1))<lrho, beta3_star, beta3))
 }
 
-# sample_sigma<-function(z, beta, a0, g0){
-#   a<-length(z)*(a0+3/2)-1
-#   b<-sum(beta^2)/2 + g0
-#   sqrt(1/rgamma(1, a, b))
-# }
-
 sample_sigma<-function(z, beta, a0, g0){
   a<-length(z)*(a0+3/2)-1
-  b<-sum(beta^2)/2 + g0
+  b<-sum(beta^2/2 + g0)
   sqrt(1/rgamma(1, a, b))
 }
 
