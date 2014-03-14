@@ -1,27 +1,22 @@
 ### Code for EDA ###
+# source("code/library.R")
+# source("code/data_format.R")
+
 ## Basic summaries
-dat_store_s <- ddply(dat, .(store), summarise, 
+dat_store_s <- ddply(dat.orig, .(store), summarise, 
                      count = length(price), 
                      num_sales = sum(mvm))
 
-plot_nrow_hist <- ggplot(dat_store_s) + geom_histogram(aes(count)) + xlab("Number of observations") + 
+plot_nrow_hist <- ggplot(dat_store_s) + geom_histogram(aes(count), fill=I("grey60"), colour=I("black")) + xlab("Number of observations") + 
   theme_bw()
 
-plot_nsales_hist <- ggplot(dat_store_s) + geom_histogram(aes(num_sales)) + xlab("Number of units sold") + 
+plot_nsales_hist <- ggplot(dat_store_s) + geom_histogram(aes(num_sales), fill=I("grey60"), colour=I("black")) + xlab("Number of units sold") + 
   theme_bw()
 
-plot_density <- ggplot(aes(value, group=store), data=melt(dat[,-2], id.vars="store")) + 
+plot_density <- ggplot(aes(value, group=store), data=melt(dat.orig[,-c(2, 3, 6, 7)], id.vars="store")) + 
   geom_line(alpha=.1, stat='density') + 
   facet_wrap(~variable, scales='free') + 
   theme_bw()
-
-
-#### Sample Stores ####
-samp_store<-function(n, seed, dat){
-  set.seed(seed)
-  s<-sample(unique(dat$store),n)
-  dat[dat$store %in% s,]
-}
 
 #### Plot Price vs. Volume ####
 ## Sample 4 stores
@@ -41,7 +36,7 @@ plot_four_stores <- ggplot(stores4_m, ) +
   theme(legend.position="bottom")
 
 plot_hist_4 <- ggplot(stores4) +
-  geom_histogram(aes(mvm)) +
+  geom_histogram(aes(mvm), fill=I("grey60"), colour=I("black")) +
   facet_wrap(~store, nrow=2, scales="free") +
   theme_bw()
 

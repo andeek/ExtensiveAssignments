@@ -1,5 +1,11 @@
-#### Function for newtraph ####
-ders.bean <- function(ps, dat, phi) {
+#### Zero Inflated Poisson Gamma ####
+# source("code/library.R")
+# source("code/data_format.R")
+# source("code/helpers.R")
+# source("code/newtraph_kaiser.R")
+
+## Function for newtraph
+ders.zipg <- function(ps, dat, phi) {
   ##likelihood
   b0 <- ps[1]
   b1 <- ps[2]
@@ -11,11 +17,12 @@ ders.bean <- function(ps, dat, phi) {
   
   T1 <- exp(b0 + b1*x)
   T2 <- exp(b2 + b3*x)  
-  T3 <- (1/(1+phi))^(mu/phi)
-  T4 <- log(1/(1+phi))/phi
   
   p <- T1/(1+T1)
   mu <- T2  
+  
+  T3 <- (1/(1+phi))^(mu/phi)
+  T4 <- log(1/(1+phi))/phi
   
   delta <- as.numeric(y==0)
   
@@ -23,7 +30,7 @@ ders.bean <- function(ps, dat, phi) {
   
   ##gradient
   dldp <- delta*(T3 - 1)/(1-p + p*T3) + (1-delta)/p 
-  dldmu <- delta*(p*T3*T4)/(1-p + p*T3) + (1-delta)*(-digamma(mu/phi) - log(phi) + digamma(y + mu/phi))/phi
+  dldmu <- delta*(p*T3*T4)/(1-p + p*T3) + (1-delta)*(-digamma(mu/phi) - log(phi) + digamma(y + mu/phi) + phi*T4)/phi
   dpdb0 <- T1/(1+T1)^2
   dpdb1 <- x*T1/(1+T1)^2
   dpdb2 <- 0
@@ -85,6 +92,7 @@ ders.bean <- function(ps, dat, phi) {
   return(list(loglik, grad, hess))  
 }
 
+## likelihood function
 loglik <- function(par, dat, phi){
   b0<-par[1]
   b1<-par[2]
@@ -106,26 +114,25 @@ loglik <- function(par, dat, phi){
   sum(delta*log(1-p + p*(1/(1+phi))^(mu/phi)) + (1-delta)*(log(p) - lfactorial(y) - lgamma(mu/phi) - mu/phi*log(phi) + lgamma(y + mu/phi) + (y+mu/phi)*log(phi/(1+phi))))
 }
 
-#### Sample Stores ####
-samp_store<-function(n, seed, dat){
-  set.seed(seed)
-  s<-sample(unique(dat$store),n)
-  dat[dat$store %in% s,]
-}
-
-#### Try ders.newt ####
-source("code/newtraph_kaiser.R")
+store1 <- samp_store(1, 1, dat)
+store1_opt <- optim(c(0,0,0,0), function(u) -loglik(u, dat=store1, phi=1), hessian=TRUE)
+ders.zipg(store1_opt$par, store1, 1)
+newtraph(ders=ders.zipg, dat=store1, x0=, phi=1)
 
 est <- dlply(dat, .(store), function(x) {
   x0 <- optim(c(0,0,0,0), function(u) -loglik(u, dat=x))$par
-  tryCatch(newtraph(ders=ders.bean, dat=x, x0=x0, phi=1), 
+  tryCatch(newtraph(ders=ders.zipg, dat=x, x0=x0, phi=1), 
            error=function(e) list(e))
 })
 
-my_ellipsis_function <- function(...) {
-  input_list <- list(...)
-  str(input_list)
-  NULL
-}
-my_ellipsis_function(a=1:10,b=11:20,c=21:30)
+## profile out phi
+phis <- seq(.1, .19, by = 1)
+profile.phi.results <- ldply(phis, function(phi) {
+  cat(paste("phi:", phi))
+  zipoisgamma_NR <- optim(c(0,0,0,0), function(u) -loglik(u, dat=dat, phi=phi)) 
+  c(phi = phi, loglik = zipoisgamma_NR$value, b0 = zipoisgamma_NR$par[1], b1 = zipoisgamma_NR$par[2], b2 = zipoisgamma_NR$par[3], b3 = zipoisgamma_NR$par[4], converge=zipoisgamma_NR$convergence)
+})
+
+zigp.newtraph <- profile.alpha.results[which.max(profile.alpha.results$loglik), ]
+par.zigp.newtraph <- as.numeric(zigp.newtraph[1,3:6])
 

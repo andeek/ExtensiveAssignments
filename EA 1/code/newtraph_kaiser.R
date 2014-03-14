@@ -1,10 +1,7 @@
 "newtraph" <- 
 function(ders, dat, x0, ...)
 {
-    args <- as.list(substitute(list(...)))[-1L]
-    ders <- function()
-    
-    if(extra) {}
+
 # 	cat("While N-R may be used for either minimization or\nmaximization")
 # 	cat("The checks for progress in this function are written")
 # 	cat("for maximization.  If you want to minimize, chage your")
@@ -25,7 +22,7 @@ function(ders, dat, x0, ...)
 #                 cat("Current estimates beginning iteration ", k, ":", fill = T)
 # 		cat(curnt, fill = T)
 #                 cat(" ",fill=T)
-		int <- ders(curnt, dat)
+		int <- ders(curnt, dat, ...)
                 logL<-int[[1]]
                 gi<-int[[2]]
 # 		cat("Log likelihood for these estimates: ", fill = T)
@@ -40,7 +37,7 @@ function(ders, dat, x0, ...)
 		sc <- 1
 		repeat {
                         sc <- sc + 1
-			check <- ders(new, dat)
+			check <- ders(new, dat, ...)
 			if(check[[1]] < logL) {new <- curnt - (1/sc) * step}
 			if(check[[1]] >= logL){newL<-check[[1]]
                                                  newg<-check[[2]]}
@@ -64,7 +61,7 @@ function(ders, dat, x0, ...)
 	}
 # 	cat("", fill = T)
 #         cat(" ",fill=T)
-	final <- ders(new, dat)
+	final <- ders(new, dat, ...)
         flogL<-final[[1]]
         fgrad<-final[[2]]
         fInf<--1*solve(final[[3]])
@@ -79,7 +76,9 @@ function(ders, dat, x0, ...)
 # 	cat("(i.e., Inverse of Negative Hessian)", fill = T)
 # 	cat("", fill = T)
 # 	print(fInf)
-	res<-list(new,flogL,fInf, extra)
+	res<-list(par=new,
+            loglik=flogL,
+            inv_neg_hess=fInf)
         return(res)
 }
 

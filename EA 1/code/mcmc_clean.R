@@ -1,9 +1,6 @@
-#### Libraries ####
-library(coda)
-library(plyr)
-library(lubridate)
-library(ggplot2)
-library(reshape)
+### Code for MCMC for Regional Model ###
+source("code/library.R")
+source("code/data_format.R")
 
 #### Conditional Distributions ####
 cond_b0 <- function(beta0, beta1, beta2, beta3, sigma0, x, y){
@@ -160,15 +157,6 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
   }
   return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep))
 }
-
-#### Data ####
-dat_bean<-read.table(file='EA 1/data/greenbeandat.txt', header=TRUE)[,c(1,3,4,5)]
-dat_bean$date <-  ymd(as.character(dat_bean$date))
-
-rm_store<-c(1027, 1037, 1068, 1078, 1108, 1159, 1161, 1177, 1183, 1324, 1381, 1389, 1406, 1469, 1471, 1514,
-            1525, 1533, 1542, 1573, 1620, 1637, 1848, 1866, 7022, 7025, 7030, 7035, 7042, 7055)
-
-dat <- dat_bean[!dat_bean$store %in% rm_store,]
 
 #### Run 3 Chains ####
 res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
