@@ -254,6 +254,47 @@ row.names(est.bayes)<-unique(dat$store)
 cis.bayes<-cbind(t(cis_b0), t(cis_b1), t(cis_b2), t(cis_b3))
 row.names(cis.bayes)<-unique(dat$store)
 names(cis.bayes) <- c("b0_l", "b0_u","b1_l", "b1_u","b2_l", "b2_u","b3_l", "b3_u")
-save(est.bayes, cis.bayes, file="bayes_ests.rda")
+
+#### Compare stores ####
+load("./data/pois_ests.rda")
+load("./data/zip_ests.rda")
+# 4 sample stores #
+stores4<-samp_store(4, 2, dat)
+
+z1<-unique(stores4$store)
+sub_bayes<-est.bayes[row.names(est.bayes) %in% z1,]
+sub_pois<-est.pois[row.names(est.pois) %in% z1,]
+sub_zip <- zpois.mles[zpois.mles$store %in% z1,]
+
+### don't have time to do this prettily... ###
+ests_dat<-NULL
+for(i in 1:4){
+  ests1<-rbind(c(sub_pois[i,], NA, NA), sub_zip[i,-1], sub_bayes[i,])
+  ests_dat<-rbind(ests_dat, ests1)
+}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+\hline
+Store ID & Model & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ \\ 
+\hline
+1065 & Poisson & 7.96 & -11.60 &  &  \\ 
+& ZIP & 10.28 & -15.55 & 7.04 & -9.28 \\ 
+& Regional & 7.65 & -11.43 & 7.07 & -9.35 \\ \hline \hline
+1075 & Poisson & 8.64 & -12.19 &  &  \\ 
+& ZIP& 18.53 & -29.24 & 8.35 & -11.44 \\ 
+& Regional & 7.70 & -10.36 & 8.34 & -11.40 \\ \hline \hline
+1416 & Poisson & 8.12 & -10.05 &  &  \\ 
+& ZIP & 6.51 & -5.24 & 8.08 & -9.92 \\ 
+& Regional & 4.57 & -1.68 & 8.09 & -9.95 \\ \hline \hline
+1481 & Poisson & 7.28 & -9.38 &  &  \\ 
+& ZIP & 8.00 & -10.67 & 6.90 & -8.44 \\ 
+& Regional & 6.48 & -8.10 & 6.87 & -8.38 \\ \hline
+\hline
+\end{tabular}
+\end{table}
+
+#### Generate Data ####
 
 
