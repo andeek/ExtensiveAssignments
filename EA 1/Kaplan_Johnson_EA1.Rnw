@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage[margin=1.25in]{geometry}
-\usepackage{graphicx, hyperref, float, multicol, pdflscape, enumerate, paralist}
+\usepackage{graphicx, hyperref, float, multicol, pdflscape, enumerate, paralist, longtable}
 \usepackage{amssymb,amsmath,amsthm} 
 \usepackage[backend=bibtex, natbib=true]{biblatex}
 \usepackage[toc,page]{appendix}
@@ -53,6 +53,7 @@ source("code/newtraph_kaiser.R")
 
 \section{Conclusion} 
 
+\clearpage
 \begin{appendices}
 \section{Appendix: Poisson Model}
 <<appendix_Poisson, child='parts/appendix_Poisson.Rnw', eval=TRUE>>=

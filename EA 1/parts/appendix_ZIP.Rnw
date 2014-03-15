@@ -27,6 +27,11 @@ Now let $T_1 = \exp(\beta_{0j} + \beta_{1j} x_{ij})$ and $T_2 = \exp(\beta_{2j} 
 \end{align*}
 Where the remaining partial derivatives are zero.
 
+\subsection{Results}
+<<zpois_res_results, results='asis', echo=FALSE>>=
+print(xtable(cbind(zpois.mles[1:81,], rbind(zpois.mles[82:161,],c(NA,NA))), align="l|ccccc|ccccc|"), table.placement='H', include.rownames=FALSE, tabular.environment="longtable",floating=FALSE)
+@
+
 \subsection{Code}
 <<code_appendix_zipois, echo=FALSE>>=
 read_chunk("../code/zipois_reg.R", labels = 'zipois_reg-source')

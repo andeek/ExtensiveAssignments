@@ -3,7 +3,7 @@
 est.pois <- as.data.frame(est.pois)
 est.pois$store <- as.numeric(rownames(est.pois))
 est.pois<-est.pois[,c(3,1,2)]
-print(xtable(cbind(est.pois[1:54,],est.pois[55:108,], rbind(est.pois[109:161,],c(NA,NA))), align="l|ccc|ccc|ccc|"), table.placement='H', include.rownames=FALSE)
+print(xtable(cbind(est.pois[1:54,],est.pois[55:108,], rbind(est.pois[109:161,],c(NA,NA))), align="l|ccc|ccc|ccc|"), table.placement='H', include.rownames=FALSE, tabular.environment="longtable",floating=FALSE)
 @
 
 
