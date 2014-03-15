@@ -14,7 +14,7 @@
 \newtheorem{res}{Result}
 
 \setlength{\parindent}{0cm}
-\setlength{\parskip}{.05cm}
+\setlength{\parskip}{.1cm}
 \renewcommand{\baselinestretch}{1.5}
 
 \title{Extensive Assignment 1 \\ {STAT 601}}
