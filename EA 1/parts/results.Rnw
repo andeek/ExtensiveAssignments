@@ -34,13 +34,13 @@ Estimation of the parameters of the Bayesian regional model was accomplished usi
 Trace plots of parameter estimates suggested a burn-in of 1000 iterations was reasonable for each, chain. the remaining 2000 simulation from the joint distributions from each chain (resulting in 6000 simulations) were used for estimation. A sample of trace plots for one store (ID: 1009, index $j=1$) are shown in Figure \ref{fig:trace_b}.
 
 \begin{figure}[H]
-  \centering{\includegraphics[width=\textwidth]{trace_b.png}}
+  \centering{\includegraphics[width=.8\textwidth]{trace_b.png}}
   \caption{Traceplots for $\beta_{01}$, $\beta_{11}$, $\beta_{21}$, $\beta_{31}$, for Store 1009.}
   \label{fig:trace_b}
 \end{figure}
 
 \begin{figure}[H]
-  \centering{\includegraphics[width=\textwidth]{trace_sigma.png}}
+  \centering{\includegraphics[width=.8\textwidth]{trace_sigma.png}}
   \caption{Traceplots for $\sigma_{0}$, $\sigma_{1}$, $\sigma_{2}$, $\sigma_{3}$, for Store 1009.}
   \label{fig:trace_sigma}
 \end{figure}
@@ -53,7 +53,7 @@ Estimates of $\beta_{0j}$, $\beta_{1j}$, $\beta_{2j}$, and $\beta_{3j}$ for each
 bayes.coef.dist
 @
 
-
+Parameter estimates for the four stores (1065, 1075, 1416, 1481) for the three models considered are shown in Table \ref{tab:params}. We hypothesized that the regional model should give similar estimates to the store-wise Zero-Inflated model, as we are still modeling parameters for each store. The estimate of $\beta_2$ and $\beta_3$ are very similar between the store-wise Zero-Inflated Poisson model and the regional Zero-Inflated Poisson model. However, estimates of $\beta_0$ and $\beta_1$ appear quite different across the models. This could be due to lack of convergence within the MCMC algorithm for the regional model, or that the assumption of common distribution was more restrictive for $\beta_0$ and $\beta_1$.
 
 \begin{table}[H]
 \centering
@@ -76,4 +76,5 @@ Store ID & Model & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ \\
 \hline
 \end{tabular}
 \caption{Parameter estimates for $\beta_0$, $\beta_1$, $\beta_2$, and $\beta_3$ for the Poisson, ZIP, and regional models, for the four stores considered earlier.}
+\label{tab:params}
 \end{table}

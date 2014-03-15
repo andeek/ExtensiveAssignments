@@ -1,0 +1,24 @@
+To compare models, we considered implementing some derivation of a Chi-square goodness of fit test. However, as this would require a rather ad hoc procedure of binning units of green beans sold, we instead considered out models as data generating mechanisms. If our models are to be considered adequate at modeling the relationship between units of green beans sold at a given store and price, the models should be able to generate data that act like the original data. 
+
+To implement this idea, we considered four test quantities within each store:
+\begin{itemize}
+  \item Proportion of days with 0 sales of green beans
+  \item Number of days with more than 40 sales
+  \item Number of days with less than 4 sales
+  \item Sample variance of units sold over the entire time period
+\end{itemize}
+
+300 datasets were generated from each of the three models, for each of the 161 stores, in the following ways, respectively.
+\begin{itemize}
+  \item Poisson
+    \begin{enumerate}
+      \item Use maximum likelihood estimates from each store to calculate an estimate of $\hat{\lambda_{ij}}$ for each price, $x_{ij}$.
+      \item Simulate 300 iid $y^{*}_{ij}$'s from a $Poisson(\hat{\lambda_{ij}})$ distribution for each $\hat{\lambda_{ij}}$.
+    \end{enumerate}
+  \item Zero-Inflated Poisson
+    \begin{enumerate}
+      \item Use maximum likelihood estimates from each store to calculate an estimate of $\hat{\p_{ij}}$ and $\hat{\lambda_{ij}}$ for each price, $x_{ij}$.
+      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{\p_{ij}})
+    \end{enumerate}
+  \item
+\end{itemize}
