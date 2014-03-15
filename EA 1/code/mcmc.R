@@ -103,6 +103,8 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
   beta3_keep[1,] <- beta3
   sigma_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=4)
   sigma_keep[1,] <- c(sigma0, sigma1, sigma2, sigma3)
+  sigmat_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=4)
+  sigma_keep[1,] <- c(sigma00, sigma01, sigma02, sigma03)
   
   for (i in 2:n.reps) {      
     for(j in 1:length(z)){
@@ -119,27 +121,27 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
       beta3[j] <- sample_beta3(y, x, beta0[j], beta1[j], beta2[j], beta3[j], sigma3, sigma03, b3)
     
       if (tune) {
-        if (beta0[j]==beta0_old) {
+        if(beta0[j]==beta0_old){
           sigma00 = sigma00/1.1 
-        } else {
+        }else{
           sigma00 = sigma00*1.1
         }
         
-        if (beta1[j]==beta1_old) {
+        if(beta1[j]==beta1_old){
           sigma01 = sigma01/1.1 
-        } else {
+        }else{
           sigma01 = sigma01*1.1
         }
         
-        if (beta2[j]==beta2_old) {
+        if(beta2[j]==beta2_old){
           sigma02 = sigma02/1.1 
-        } else {
+        }else{
           sigma02 = sigma02*1.1
         }
         
-        if (beta3[j]==beta3_old) {
+        if(beta3[j]==beta3_old){
           sigma03 = sigma03/1.1 
-        } else {
+        }else{
           sigma03 = sigma03*1.1
         }
       }
@@ -155,12 +157,14 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
     beta2_keep[i,] = beta2
     beta3_keep[i,] = beta3
     sigma_keep[i,] = c(sigma0, sigma1, sigma2, sigma3)
+    sigmat_keep[i,] = c(sigma00, sigma01, sigma02, sigma03)
+    
     if(counter){
       cat("\r")
       cat("Iter:", i, "\r")
     }
   }
-  return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep))
+  return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep, sigmat=sigmat_keep))
 }
 
 #### Data ####
@@ -185,30 +189,30 @@ stores4<-samp_store(4, 25, dat=dat_bean)
 
 dat <- stores4
 
-res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),0,10), beta1=runif(length(unique(dat$store)),0,10), beta2=runif(length(unique(dat$store)),0,10), beta3=runif(length(unique(dat$store)),0,10),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=100, a=0.5, b=0.5)
+res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,6), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),6,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=1, sigma1=1, sigma2=1, sigma3=1, s=1,
+                n.reps=5000, a=0.5, b=0.5)
 
 #user  system elapsed 
 #244.35    0.79  254.80
 
-res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=1500, a=0.5, b=0.5)
+res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),6,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=.05,
+                n.reps=1000, a=0.5, b=0.5)
 
 res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
                 sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
                 n.reps=1500, a=0.5, b=0.5)
 
 #### Check some acceptance probabilities? ####
-sum(diff(res1$beta3[,1])!=0)/1500
-sum(diff(res1$beta2[,1])!=0)/1500
-sum(diff(res1$beta1[,1])!=0)/1500
-sum(diff(res1$beta0[,1])!=0)/1500
+sum(diff(res1$beta3[,3])!=0)/5000
+sum(diff(res1$beta2[,3])!=0)/5000
+sum(diff(res1$beta1[,3])!=0)/5000
+sum(diff(res1$beta0[,3])!=0)/5000
 
-qplot(500:1500, res1$beta0[500:1500,4], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
-qplot(500:1500, res1$beta1[500:1500,4], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
-qplot(500:1500, res1$beta2[500:1500,4], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
+qplot(50:5000, res1$sigmat[50:5000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:3000, res1$beta2[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
+qplot(1:3000, res1$beta3[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
 qplot(500:1500, res1$beta3[500:1500,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 
 qplot(500:2000, res2$sigma[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
