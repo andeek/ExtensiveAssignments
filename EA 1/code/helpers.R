@@ -9,3 +9,10 @@ samp_store<-function(n, seed, dat){
 rmse<-function(x){
   sqrt(sum((x$y - fitted(x))^2/length(x$y)))
 }
+
+
+
+
+
+
+

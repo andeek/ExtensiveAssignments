@@ -185,32 +185,32 @@ samp_store<-function(n, seed, dat){
 
 #### Plot Price vs. Volume ####
 ## Sample 4 stores
-stores4<-samp_store(4, 25, dat=dat_bean)
+stores4<-samp_store(10, 25, dat=dat_bean)
 
-dat <- stores4
-
-res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,6), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),6,8), beta3=runif(length(unique(dat$store)),-10,-8),
+dat <- dat_bean
+ptm<-proc.time()
+res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
                 sigma0=1, sigma1=1, sigma2=1, sigma3=1, s=1,
-                n.reps=5000, a=0.5, b=0.5)
-
+                n.reps=10, a=0.5, b=0.5)
+proc.time() - ptm
 #user  system elapsed 
 #244.35    0.79  254.80
 
-res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),6,8), beta3=runif(length(unique(dat$store)),-10,-8),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=.05,
+res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=1, sigma1=6, sigma2=3, sigma3=2, s=1,
                 n.reps=1000, a=0.5, b=0.5)
 
-res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=1500, a=0.5, b=0.5)
+res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=6, sigma1=5, sigma2=8, sigma3=10, s=1,
+                n.reps=1000, a=0.5, b=0.5)
 
 #### Check some acceptance probabilities? ####
-sum(diff(res1$beta3[,3])!=0)/5000
-sum(diff(res1$beta2[,3])!=0)/5000
-sum(diff(res1$beta1[,3])!=0)/5000
-sum(diff(res1$beta0[,3])!=0)/5000
+sum(diff(res1$beta3[,3])!=0)/1000
+sum(diff(res1$beta2[,3])!=0)/1000
+sum(diff(res1$beta1[,3])!=0)/1000
+sum(diff(res1$beta0[,3])!=0)/1000
 
-qplot(50:5000, res1$sigmat[50:5000,4], geom="line", xlab="iteration", ylab=expression(beta[paste("0,1")]))
+qplot(1:1000, res1$sigma[,1], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
 qplot(1:3000, res1$beta2[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("1,1")]))
 qplot(1:3000, res1$beta3[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("2,1")]))
 qplot(500:1500, res1$beta3[500:1500,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
@@ -220,14 +220,14 @@ qplot(1:1000, res1$sigma[,2], geom="line", xlab="iteration", ylab=expression(bet
 qplot(1:1000, res1$sigma[,3], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 qplot(1:1000, res1$sigma[,4], geom="line", xlab="iteration", ylab=expression(beta[paste("3,1")]))
 
-
+res1$beta0[1000:5000,2]-res1$beta1[1000:5000,2]
 load("C:/Users/Maggie/Dropbox/Stat 601/Extensive HW1/res1.rda")
 load("C:/Users/Maggie/Dropbox/Stat 601/Extensive HW1/res2.rda")
 load("C:/Users/Maggie/Dropbox/Stat 601/Extensive HW1/res3.rda")
 
 
-beta0.list = mcmc.list(mcmc(res1$beta0[500:1500,2]),
-                       mcmc(res2$beta0[500:1500,2]),
-                       mcmc(res3$beta0[500:1500,2]))
+beta0.list = mcmc.list(mcmc(res1$beta3[,4]),
+                       mcmc(res2$beta3[,4]),
+                       mcmc(res3$beta3[,4]))
 
 plot(beta0.list, smooth=F, density=F, auto.layout=F, main="beta", lwd=2, ylab="iterations")
