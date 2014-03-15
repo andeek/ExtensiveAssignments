@@ -86,11 +86,12 @@ Consider again the structure of the store-wise Zero-Inflated Poisson model with 
 Z_{ij} &\stackrel{\text{iid}}{\sim} \text{Bern}(p_{ij}) \\
 Y_{ij} | Z_{ij} = 1 &\stackrel{\text{indep}}{\sim} \text{Pois}(\lambda_{ij}) \\
 Pr(Y_{ij} =0| Z_{ij} = 0) &= 1\\
-\beta_kj \sim N(0, \sigma^2_k) \hspace{.cm} j=1,...,J, \hspace{.1cm} k=0,1,2,3\\
-\sigma^2_k \sim Inv\text{-}Gamma(a,b) \hspace{.3cm} k=0,1,2,3
+\beta_kj &\sim N(0, \sigma^2_k) \hspace{.3cm} j=1,...,J, \hspace{.1cm} k=0,1,2,3\\
+\sigma^2_k &\sim Inv\text{-}Gamma(a,b) \hspace{.3cm} k=0,1,2,3
 \end{align*}
 where again
 \begin{align*}
-\lambda_{ij} &= \exp(\beta_{2j} + \beta_{3j} x_{ij})
+\lambda_{ij} &= \exp(\beta_{2j} + \beta_{3j} x_{ij})\\
  p_{ij} &= \frac{\exp(\beta_{0j} + \beta_{1j} x_{ij})}{1 + \exp(\beta_{0j} + \beta_{1j} x_{ij})}
 \end{align*}
+
