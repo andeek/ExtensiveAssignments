@@ -1,5 +1,7 @@
-source("code/pois_reg_run.R")
-source("code/zipois_reg_run.R")
+### Residuals ###
+
+source("../code/pois_reg_run.R")
+source("../code/zipois_reg_run.R")
 
 est.pois <- as.data.frame(est.pois)
 est.pois$store <- as.character(rownames(est.pois))
@@ -35,12 +37,22 @@ plot_D_resids <- function(store_id, deviance){
   print(g)
 }
 
-plot_D_resids(1009, D_resids_pois)
+storeid_4 <- unique(laply(strsplit(stores4$store, ":"), function(x) as.numeric(x[2])))        
+                    
+stand_resid_plot_price <- ggplot() + 
+  geom_jitter(aes(price, (mvm-lambda)/sqrt(lambda)), colour="grey", data=input[input$store%in% storeid_4,]) +
+  geom_jitter(aes(price, (mvm-mu)/sqrt(1+lambda+mu)), colour="black", shape=17, data=input.zip[input.zip$store %in% storeid_4,]) +
+  facet_wrap(~store, nrow=2) +
+  xlab("Price") + ylab("Standardized Residuals")
 
-qplot(price, (mvm-mu)/sqrt(1+lambda+mu), data=input.zip[input.zip$store==1481,]) +
-geom_point(aes(price+.001, (mvm-lambda)/sqrt(lambda)), colour="red", data=input[input$store==1481,])
+stand_resid_plot_time <- ggplot() + 
+  geom_jitter(aes(date, (mvm-lambda)/sqrt(lambda)), colour="grey", data=input[input$store%in% storeid_4,]) +
+  geom_jitter(aes(date, (mvm-mu)/sqrt(1+lambda+mu)), colour="black", shape=17, data=input.zip[input.zip$store %in% storeid_4,]) +
+  facet_wrap(~store, nrow=2) +
+  xlab("Time") + ylab("Standardized Residuals")
 
+MSE_standard <- cbind(
+ddply(input.zip[input.zip$store%in% storeid_4,], .(store), summarise, MSE=sum(((mvm-mu)/sqrt(1+lambda+mu))^2)/(length(mvm)-1)),
+ddply(input[input$store%in% storeid_4,], .(store), summarise, MSE=sum(((mvm-lambda)/sqrt(lambda))^2)/(length(mvm)-1))[,2])
 
-with(input.zip[input.zip$store==1009,], sum(((mvm-mu)/sqrt(1+lambda+mu))^2)/(length(mvm)-1))
-with(input[input$store==1009,], sum(((mvm-lambda)/sqrt(lambda))^2)/(length(mvm)-1))
-
+names(MSE_standard) <- c("Store", "ZIP", "Pois")

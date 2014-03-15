@@ -52,6 +52,11 @@ source("code/newtraph_kaiser.R")
 @
 
 \section{Diagnostics}
+<<diagnostics, child='parts/diagnostics.Rnw', eval=TRUE>>=
+@
+\subsection{Residual Analysis}
+<<residual, child='parts/residuals.Rnw', eval=TRUE>>=
+@
 
 \section{Conclusion} 
 

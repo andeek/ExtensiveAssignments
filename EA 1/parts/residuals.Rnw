@@ -1,4 +1,36 @@
+<<residuals, echo=FALSE>>=
+source("../code/resids.R")
+@
 For the simple Poisson model we can look at deviance residuals because it is a member of an exponential dispersion family. On the other hand, the zero-inflated Poisson model is not a member of an exponential dispersion family, so it doesn't fit nicely with the deviance framework. For this reason, we look at standardized residuals for to be able to compare thse models. We will use residual comparison for two reasons: (1) to check fit of each model, and (2) to look at residuals over time. Looking at residuals over time will allow us to examine patterns over time as a part of model fitting. Due to space contraints, we will look at plots of the four randomly selected stores discussed previously.
 
 To calculate standardized residuals of the simple Poisson and zero-inflated Poisson, we need the mean and variance of each marginal model. See Table~\ref{tab:moments} for these values.
+\begin{table}[H]
+\center
+\begin{tabular}{cc c}
+\hline
+Model & $\text{E}(Y_{ij})$ & $\text{var}(Y_{ij})$\\
+\hline
+\hline
+Simple Poisson & $\lambda_{ij}$ & $\lambda_{ij}$ \\
+Zero-Inflated Poisson & $p_{ij}\lambda_{ij}$ & $p_{ij}\lambda_{ij}(1 + \lambda_{ij} + p_{ij} \lambda_{ij})$\\
+\hline
+\end{tabular}
+\caption{First and second moments of the simple Poisson model and zero-inflated Poisson model.}
+\label{tab:moments}
+\end{table}
+Looking at the standardized residuals versus the covariate (price) for these four stores in Figure~\ref{fig:plot_price}, it's clear that the zero-inflated Poisson model shows less spread and the residuals are more closely around zero. However, even with the zero-inflated model there is still some variablility related to the variance within covariate values, which could be indication of a poor fit.
+<<plot_price, fig.pos='H', fig.cap='Standardized residual plots plottes versus price for four randomly selected stores. Black triangles represent the zero-inflated Poisson model while the grey circles represent the simple Poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4>>=
+stand_resid_plot_price
+@
+We can also look at a mean squared error based on the standardized residuals to get a feel for how the zero-inflated model is fitting these stores in comparison to the simple Poisson model. See Table~\ref{tab:mse} for these values. In each of the four stores sampled, the MSE is smaller for the zero-inflated model, further confirming that this model better handles the shape of the distribution for sales, as we saw in our earlier diagnostics.
+<<mse, results='asis', echo=FALSE>>=
+print(xtable(MSE_standard, label="tab:mse", caption='MSE for each model for four stores based on standardized residuals.'), include.rownames=FALSE)
+@
+Finally, we look at residuals over time to investigate if there are any problems with our assumption of independence between time points. See Figure~\ref{fig:plot_time}.
+<<plot_time, fig.pos='H', fig.cap='Standardized residual plots plottes versus time for four randomly selected stores. Black triangles represent the zero-inflated Poisson model while the grey circles represent the simple Poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4>>=
+stand_resid_plot_time
+@
+Within this plot, the black triangles are representing the zero inflated model and the grey circles represent the simple poisson. Within stores {\tt 1416} and {\tt 1481} we can see what looks like a positive dependence stucture. We see this when residuals start becoming far from zero, the next time point residual is more likely to also be far away from zero. This is an indication that a model that incorporates time may be a better choice for this dataset.
+
+
 
