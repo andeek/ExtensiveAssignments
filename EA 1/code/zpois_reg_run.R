@@ -1,4 +1,4 @@
-load("data/fit.zpois.rda")
+load("../data/fit.zpois.rda")
 
 zpois.mles <- ldply(zpois.est, function(x) if(length(x) == 3) t(x[[1]]))
 zpois.mles.m <- melt(zpois.mles, id.vars="store")
