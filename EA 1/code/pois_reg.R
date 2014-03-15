@@ -8,13 +8,14 @@ fit.pois <- dlply(dat, .(store), function(x) {
 })
 
 rmse.pois<-round(as.numeric(sapply(fit.pois, rmse)),3)
-
+save(fit.pois, file="fit.pois.rda")
 ### Coefficients ###
 est.pois<-t(sapply(fit.pois, function(u) u$coef))
 est.pois.m<-melt(est.pois)
 dist.coef.pois.plot <- qplot(data=est.pois.m, x=value, xlab="Coefficients", ylab="Count", fill=I("grey60"), colour=I("black")) + facet_wrap(~Var2, scales="free_x")
 rmse.pois.plot <- qplot(x=rmse.pois, xlab="RMSE", ylab="Count", fill=I("grey60"), colour=I("black"), binwidth=2)
 
+<<<<<<< HEAD
 ### Generating Data ###
 generate_data_pois<-function(model.fit, nsets=100){
   x<-model.fit$data$price
@@ -100,3 +101,7 @@ generate_data_pois<-function(model.fit, nsets=100){
 # ## 0 stores can pass all
 # sum(apply(crits, 1, function(u) all(u > 0.05 & u < 0.95)))
 # 
+=======
+
+
+>>>>>>> 22a27604100fd09edaedd2be2859fbfd18996929
