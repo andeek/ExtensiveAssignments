@@ -2,23 +2,58 @@ To compare models, we considered implementing some derivation of a Chi-square go
 
 To implement this idea, we considered four test quantities within each store:
 \begin{itemize}
-  \item Proportion of days with 0 sales of green beans
-  \item Number of days with more than 40 sales
-  \item Number of days with less than 4 sales
-  \item Sample variance of units sold over the entire time period
+  \item $T_1(y)$: Proportion of days with 0 sales of green beans
+  \item $T_2(y)$: Number of days with more than 40 sales
+  \item $T_3(y)$: Number of days with less than 4 sales
+  \item $T_4(y)$: Sample variance of units sold over the entire time period
 \end{itemize}
 
 300 datasets were generated from each of the three models, for each of the 161 stores, in the following ways, respectively.
 \begin{itemize}
   \item Poisson
     \begin{enumerate}
-      \item Use maximum likelihood estimates from each store to calculate an estimate of $\hat{\lambda_{ij}}$ for each price, $x_{ij}$.
-      \item Simulate 300 iid $y^{*}_{ij}$'s from a $Poisson(\hat{\lambda_{ij}})$ distribution for each $\hat{\lambda_{ij}}$.
+      \item Use maximum likelihood estimates of $\boldsymbol{\beta}$ from each store to calculate $\hat{\lambda}_{ij}$ for each price, $x_{ij}$.
+      \item Simulate 300 iid $y^{*}_{ij}$'s from a $Poisson(\hat{\lambda_{ij}})$ distribution for each $\hat{\lambda}_{ij}$.
     \end{enumerate}
   \item Zero-Inflated Poisson
     \begin{enumerate}
-      \item Use maximum likelihood estimates from each store to calculate an estimate of $\hat{\p_{ij}}$ and $\hat{\lambda_{ij}}$ for each price, $x_{ij}$.
-      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{\p_{ij}})$
+      \item Use maximum likelihood estimates of $\boldsymbol{\beta}$ from each store to calculate $\hat{p}_{ij}$ and $\hat{\lambda}_{ij}$ for each price, $x_{ij}$.
+      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{p_{ij}})$ for each $\hat{p}_{ij}$
+      \item For each $z^{*}_{ij}$,
+        \begin{itemize}
+          \item If $z^{*}_{ij}$ = 0, set $y^{*}_{ij}$ = 0.
+          \item If $z^{*}_{ij}$ = 1, draw $y^{*}_{ij}$ from $Poisson(\hat{\lambda}_{ij})$
+        \end{itemize}
     \end{enumerate}
-  \item
+  \item Regional Zero-Inflated Poisson
+    \begin{enumerate}
+      \item Obtain values of $\boldsymbol{\beta}$ for each price at each store by simulating from the joint distribution using the Metropolis-within-Gibbs sampler.
+      \item For each simulated $\boldsymbol{\beta}$ and each price $x_{ij}$, calculate estimates, $\hat{p}_{ij}$ and $\hat{\lambda}_{ij}$.
+      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{p_{ij}})$ for each $\hat{p}_{ij}$
+      \item For each $z^{*}_{ij}$,
+        \begin{itemize}
+          \item If $z^{*}_{ij}$ = 0, set $y^{*}_{ij}$ = 0.
+          \item If $z^{*}_{ij}$ = 1, draw $y^{*}_{ij}$ from $Poisson(\hat{\lambda}_{ij})$
+        \end{itemize}
+    \end{enumerate}
 \end{itemize}
+
+For each of the simulated datasets, the four test quantities were calculated. Approximate p-values were calculated as $\displaymath \frac{1}{300} \sum_{i=1}^{300} I(T_i(y^{*}) > T_i(y))$ where $T_i(y^{*})$, $i=1,2,3,4$ is the test quantity on a simulated dataset, and $T_i(y)$ is the test quantity evaluated on the original dataset. Table ? shows the number of stores with an approximate p-value greater that 0.05 or less than 0.95. A very large or very small p-value is an indication that the model can not adequately represent that attribute of the original data.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Prop 0 & More 40 & Var & Less 4 \\ 
+  \hline
+Poisson &   0 &  10 &   0 &  26 \\ 
+  ZIP &  12 &  26 &   7 &  18 \\ 
+  Regional &  56 &  27 &   1 &  67 \\ 
+   \hline
+\end{tabular}
+\caption{Number of stores (out of 161) with non-significant p-values for each $T_i$, $i=1,2,3,4$, for each of the three models.}
+\end{table}
+
+Of the three models, the regional Zero-Inflated Poisson model had the most stores that did not fail the criteria. However, all three models appear to perform poorly over the majority of the stores. The simple Poisson regression model could not model as many 0's as existed in the data set, or model very large counts sold of green beans. The store-wise Zero-Inflated model was able to represent the number of 0 sale days better than the simple Poisson regression but still did poorly on modeling low count days.
+
+
