@@ -76,3 +76,21 @@ l_j(\beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}, \beta_4) &= \sum\limits_{i=1
 \end{align*}
 
 \subsection{Regional Zero-Inflated Poisson}
+The third model considered is a hierarchical Zero-Inflated Poisson model. The model is an extension of the Zero-Inflated Poisson model discussed previously fit to each store. Histograms of the estimated coefficients from this model for each store, Figure \ref{fig:zpois_mles_dist}, suggest that it may be reasonable to assume that the parameters of the model vary across stores but follow common distributions. Specifically, Normal distributions for $\beta_{0j}$, $\beta_{1j}$, $\beta_{2j}$, and $\beta_{3j}$, seem reasonable. 
+
+There is nothing inherently Bayesian about hierarchical models, but in this case, we found that estimation for 161 $\times$ 4 + 4 = 648 parameter model would be most straight forward using Bayesian estimation techniques.
+
+\subsubsection{Model}
+Consider again the structure of the store-wise Zero-Inflated Poisson model with $\{Y_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$, the number of units of green beans sold on day $i$ at store $j$, $\{Z_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$, the unobservable construct of consumer interest on day $i$ at store $j$, and $\{x_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ be the price of green beans on day $i$ at store $j$. Then the hierarchical Zero-Inflated model can be constructed as follows:
+\begin{align*}
+Z_{ij} &\stackrel{\text{iid}}{\sim} \text{Bern}(p_{ij}) \\
+Y_{ij} | Z_{ij} = 1 &\stackrel{\text{indep}}{\sim} \text{Pois}(\lambda_{ij}) \\
+Pr(Y_{ij} =0| Z_{ij} = 0) &= 1\\
+\beta_kj \sim N(0, \sigma^2_k) \hspace{.cm} j=1,...,J, \hspace{.1cm} k=0,1,2,3\\
+\sigma^2_k \sim Inv\text{-}Gamma(a,b) \hspace{.3cm} k=0,1,2,3
+\end{align*}
+where again
+\begin{align*}
+\lambda_{ij} &= \exp(\beta_{2j} + \beta_{3j} x_{ij})
+ p_{ij} &= \frac{\exp(\beta_{0j} + \beta_{1j} x_{ij})}{1 + \exp(\beta_{0j} + \beta_{1j} x_{ij})}
+\end{align*}
