@@ -19,7 +19,7 @@ print(xtable(exclude, caption='Stores with a small number of observations that m
 @
 For our final models we exclude the stores in Table~\ref{tab:exclude}. We excluded these on the basis of no price change for the observations, very few non-zero sales days or no non-zero sales days, stores with very few observations, and stores that we were unable to achieve convergence in the models to follow.
 <<exlude-table, results='asis', echo=FALSE>>=
-print(xtable(matrix(rm_store, nrow=6), caption='Store IDs that we exlude for purposes of analysis.', label="tab:exclude"), include.rownames=FALSE, include.colnames=FALSE)
+print(xtable(matrix(rm_store, nrow=6), caption='Store IDs that we exlude for purposes of analysis.', label="tab:exclude", digits=0), include.rownames=FALSE, include.colnames=FALSE)
 @
 We ended up excluding \Sexpr{nrow(rm_store)} stores, leaving us with \Sexpr{length(unique(dat.orig$store)) - nrow(rm_store)} store to work with.
 

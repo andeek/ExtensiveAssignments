@@ -1,6 +1,7 @@
 ### Code for MCMC for Regional Model ###
-source("code/library.R")
-source("code/data_format.R")
+# source("code/library.R")
+# source("code/data_format.R")
+# source("code/helpers.R")
 
 #### Conditional Distributions ####
 cond_b0 <- function(beta0, beta1, beta2, beta3, sigma0, x, y){

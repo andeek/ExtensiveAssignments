@@ -1,0 +1,25 @@
+<<runmodels, echo=FALSE>>=
+source("../code/pois_reg.R")
+source("../code/zipois_reg.R")
+@
+
+\subsection{Simple Poisson}
+<<pois_mles_dist, fig.pos='H', fig.cap='Distribution of MLE estimates for regression coefficients in the simple poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4,>>=
+dist.coef.pois.plot
+@
+
+<<pois_mles_summary, echo=FALSE, results='asis'>>=
+xtable(summary(est.pois))
+@
+
+\subsection{Zero-Inflated Poisson}
+<<zpois_mles_dist, fig.pos='H', fig.cap='Distribution of MLE estimates for regression coefficients in the zero-inflated poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4,>>=
+dist.coef.zpois.plot
+@
+
+<<zpois_mles_summary, echo=FALSE, results='asis'>>=
+xtable(summary(zpois.mles[,-1]))
+@
+
+
+\subsection{Regional Zero-Inflated Poisson}

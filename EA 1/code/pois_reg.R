@@ -1,4 +1,8 @@
 #### Poisson Regression ####
+# source("code/library.R")
+# source("code/data_format.R")
+# source("code/helpers.R")
+
 fit.pois <- dlply(dat, .(store), function(x) {
   glm(data=x, mvm ~ price, family=poisson, maxit=50)
 })

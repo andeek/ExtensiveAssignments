@@ -46,6 +46,8 @@ source("code/newtraph_kaiser.R")
 @
 
 \section{Results}
+<<results, child='parts/results.Rnw', eval=TRUE>>=
+@
 
 \section{Diagnostics}
 
