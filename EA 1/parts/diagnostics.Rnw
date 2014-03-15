@@ -18,7 +18,7 @@ To implement this idea, we considered four test quantities within each store:
   \item Zero-Inflated Poisson
     \begin{enumerate}
       \item Use maximum likelihood estimates from each store to calculate an estimate of $\hat{\p_{ij}}$ and $\hat{\lambda_{ij}}$ for each price, $x_{ij}$.
-      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{\p_{ij}})
+      \item Simulate 300 iid $z^{*}_{ij}$'s from a $Bernoulli(\hat{\p_{ij}})$
     \end{enumerate}
   \item
 \end{itemize}
