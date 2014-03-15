@@ -1,6 +1,7 @@
 In this section we detail the model formulation for each of our three models. The setup of random variables, as well as their distributions are discussed below. For detetails fo these models, including first and second derivatives used to fit the models, see the appendices.
 
 \subsection{Simple Poisson}
+We will start by formulating a simple Poisson model for each store separately. This baseline model will be used later in comparison with more complex models.
 
 \subsubsection{Model}
 Let $\{Y_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ represent the quantity of green beans sold on day $i$ at store $j$ and let $\{x_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ be the price of green beans on day $i$ at store $j$. There are $m=\Sexpr{length(unique(dat$store))}$ stores in the midwest region. Then, we impose the following model.
@@ -24,6 +25,7 @@ L_j(\beta_{0j}, \beta_{1j}) &= f(y_{1j}, \dots, y_{{n_j},j} | \beta_{0j}, \beta_
 \end{align*}
 
 \subsection{Zero-Inflated Poisson}
+The next model we will explore is a zero-inflated Poisson model fit separately to each store. This model can be interpreted as a latent variable model that incorporates consumer interest in purchasing green beans. It is a more flexible model than the simple Poisson, giving us an ability to handle data with more or less spread than a typical Poisson model will allow, as well as be flexible with the number of zeros present.
 
 \subsubsection{Model}
 Let $\{Y_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ represent the quantity of green beans sold on day $i$ at store $j$, let $\{Z_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ represent the unobservable construct of consumer interest on day $i$ at store $j$, and let $\{x_{ij}: i=1,\dots,n_j, j=1,\dots,m\}$ be the price of green beans on day $i$ at store $j$. There are $m=\Sexpr{length(unique(dat$store))}$ stores in the midwest region. Then, we impose the following model.

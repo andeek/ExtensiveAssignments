@@ -10,7 +10,7 @@ dist.coef.pois.plot
 @
 Additionally, we present summary statistics about the coefficients in Table~\ref{tab:pois_mles}.
 <<pois_mles_summary, echo=FALSE, results='asis'>>=
-xtable(summary(est.pois), label='fig:pois_mles')
+xtable(summary(est.pois), label='fig:pois_mles', caption='Summary of MLEs for regression coefficients in the simple Poisson model.')
 @
 We can interpret the poisson regression coefficient as follows: for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(est.pois[,2]))} and \Sexpr{exp(max(est.pois[,2]))} for any store.
 
@@ -23,8 +23,8 @@ dist.coef.zpois.plot
 
 <<zpois_mles_summary, echo=FALSE, results='asis'>>=
 names(zpois.mles) <- c("store", paste("beta", 0:3, sep="_"))
-print(xtable(summary(zpois.mles[,-1]), label='tab:zpois_mles'), table.placement='H')
+print(xtable(summary(zpois.mles[,-1]), label='tab:zpois_mles', caption='Summary of MLEs for regression coefficients in the zero-inflated Poisson model.'), table.placement='H')
 @
-We can interpret the regression coefficients as follows: given that there is consumer interest, for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(zpois.mle$beta_3))} and \Sexpr{exp(max(zpois.mle$beta_3))} for any store. Additionally, for a one cent increase in price of green beans, the expected consumer interest odds will change by a multiplicative factor of between \Sexpr{exp(min(zpois.mle$beta_1))} and \Sexpr{exp(max(zpois.mle$beta_1))}.
+We can interpret the regression coefficients as follows: given that there is consumer interest, for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(zpois.mles$beta_3))} and \Sexpr{exp(max(zpois.mles$beta_3))} for any store. Additionally, for a one cent increase in price of green beans, the expected consumer interest odds will change by a multiplicative factor of between \Sexpr{exp(min(zpois.mles$beta_1))} and \Sexpr{exp(max(zpois.mles$beta_1))}.
 
 \subsection{Regional Zero-Inflated Poisson}
