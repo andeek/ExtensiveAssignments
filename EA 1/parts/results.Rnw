@@ -2,24 +2,29 @@
 source("../code/pois_reg.R")
 source("../code/zipois_reg.R")
 @
-
+In this section we present the results from each model in a summarized form. The full set of results can be found in the appendices.
 \subsection{Simple Poisson}
+We fit the simple Poisson model to each store using a likelihood approach ({\tt glm}) and the resulting distribution of coefficients are displayed in Figure~\ref{fig:pois_mles_dist}. 
 <<pois_mles_dist, fig.pos='H', fig.cap='Distribution of MLE estimates for regression coefficients in the simple poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4,>>=
 dist.coef.pois.plot
 @
-
+Additionally, we present summary statistics about the coefficients in Table~\ref{tab:pois_mles}.
 <<pois_mles_summary, echo=FALSE, results='asis'>>=
-xtable(summary(est.pois))
+xtable(summary(est.pois), label='fig:pois_mles')
 @
+We can interpret the poisson regression coefficient as follows: for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(est.pois[,2]))} and \Sexpr{exp(max(est.pois[,2]))} for any store.
 
 \subsection{Zero-Inflated Poisson}
+The zero-inflated Poisson model was fit to each store using a Newton-Raphson algorithm to find Maximum likelihood estimates for the regression coefficients $\beta_{1j},\dots, \beta_{3j}$ for stores $j=1,\dots,161$. A histogram of the MLE values for the coefficients is presented in Figure~\ref{fig:zpois_mles_dist} and 
+a summary of the estimated values is found in Table~\ref{tab:zpois_mles}.
 <<zpois_mles_dist, fig.pos='H', fig.cap='Distribution of MLE estimates for regression coefficients in the zero-inflated poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4,>>=
 dist.coef.zpois.plot
 @
 
 <<zpois_mles_summary, echo=FALSE, results='asis'>>=
-xtable(summary(zpois.mles[,-1]))
+names(zpois.mles) <- c("store", paste("beta", 0:3, sep="_"))
+print(xtable(summary(zpois.mles[,-1]), label='tab:zpois_mles'), table.placement='H')
 @
-
+We can interpret the regression coefficients as follows: given that there is consumer interest, for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(zpois.mle$beta_3))} and \Sexpr{exp(max(zpois.mle$beta_3))} for any store. Additionally, for a one cent increase in price of green beans, the expected consumer interest odds will change by a multiplicative factor of between \Sexpr{exp(min(zpois.mle$beta_1))} and \Sexpr{exp(max(zpois.mle$beta_1))}.
 
 \subsection{Regional Zero-Inflated Poisson}

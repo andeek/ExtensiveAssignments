@@ -1,29 +1,29 @@
 \subsection{Derivations for Newton-Raphson}
 We must find the Jacobian and the Hessian matrix to facilitate finding the MLEs using a Newton-Raphson method:
 \begin{align*}
-\frac{\partial l_j}{\partial \beta_k} &= \sum\limits_{i=1}^{n_j} \left\{ \frac{\partial l_{ij}}{\partial p_{ij}}\frac{\partial p_{ij}}{\partial \beta_k} + \frac{\partial l_{ij}}{\partial \lambda_{ij}}\frac{\partial \lambda_{ij}}{\partial \beta_k} \right\} \\
-\frac{\partial^2 l_j}{\partial \beta_k \partial \beta_l} &= \sum\limits_{i=1}^{n_j} \left\{ \left[\frac{\partial^2 l_{ij}}{\partial p_{ij}^2}\frac{\partial p_{ij}}{\partial \beta_l} + \frac{\partial^2 l_{ij}}{\partial p_{ij}\partial \lambda_{ij}}\frac{\partial \lambda_{ij}}{\partial \beta_l}\right] \frac{\partial p_{ij}}{\partial \beta_k} + \frac{\partial^2 p_{ij}}{\partial \beta_k \partial \beta_l} \frac{\partial l_{ij}}{\partial p_{ij}} + \right.\\
-& \qquad \qquad \left. \left[\frac{\partial^2 l_{ij}}{\partial \lambda_{ij} \partial p_{ij}}\frac{\partial p_{ij}}{\partial \beta_l} + \frac{\partial^2 l_{ij}}{\partial \lambda_{ij}^2}\frac{\partial \lambda_{ij}}{\partial \beta_l}\right] \frac{\partial \lambda_{ij}}{\partial \beta_k} + \frac{\partial^2 \lambda_{ij}}{\partial \beta_k \partial \beta_l} \frac{\partial l_{ij}}{\partial \lambda_{ij}} \right\}
+\frac{\partial l_j}{\partial \beta_{kj}} &= \sum\limits_{i=1}^{n_j} \left\{ \frac{\partial l_{ij}}{\partial p_{ij}}\frac{\partial p_{ij}}{\partial \beta_{kj}} + \frac{\partial l_{ij}}{\partial \lambda_{ij}}\frac{\partial \lambda_{ij}}{\partial \beta_{kj}} \right\} \\
+\frac{\partial^2 l_j}{\partial \beta_{kj} \partial \beta_{lj}} &= \sum\limits_{i=1}^{n_j} \left\{ \left[\frac{\partial^2 l_{ij}}{\partial p_{ij}^2}\frac{\partial p_{ij}}{\partial \beta_{lj}} + \frac{\partial^2 l_{ij}}{\partial p_{ij}\partial \lambda_{ij}}\frac{\partial \lambda_{ij}}{\partial \beta_{lj}}\right] \frac{\partial p_{ij}}{\partial \beta_{kj}} + \frac{\partial^2 p_{ij}}{\partial \beta_{kj} \partial \beta_{lj}} \frac{\partial l_{ij}}{\partial p_{ij}} + \right.\\
+& \qquad \qquad \left. \left[\frac{\partial^2 l_{ij}}{\partial \lambda_{ij} \partial p_{ij}}\frac{\partial p_{ij}}{\partial \beta_{lj}} + \frac{\partial^2 l_{ij}}{\partial \lambda_{ij}^2}\frac{\partial \lambda_{ij}}{\partial \beta_{lj}}\right] \frac{\partial \lambda_{ij}}{\partial \beta_{kj}} + \frac{\partial^2 \lambda_{ij}}{\partial \beta_{kj} \partial \beta_{lj}} \frac{\partial l_{ij}}{\partial \lambda_{ij}} \right\}
 \end{align*}
 for $k,l=0,1,2,3$.
 
-Now let $T_1 = \exp(\beta_0 + \beta_1 x_{ij})$ and $T_2 = \exp(\beta_2 + \beta_3 x_{ij})$. Then, the partial derivatives can be computed as follows.
+Now let $T_1 = \exp(\beta_{0j} + \beta_{1j} x_{ij})$ and $T_2 = \exp(\beta_{2j} + \beta_{3j} x_{ij})$. Then, the partial derivatives can be computed as follows.
 \begin{align*}
 \frac{\partial l_{ij}}{\partial p_{ij}} &=  \delta_{ij} \frac{\exp(-\lambda_{ij}) - 1}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} + (1-\delta_{ij}) \frac{1}{p_{ij}}   \\
 \frac{\partial l_{ij}}{\partial \lambda_{ij}} &=  \delta_{ij} \frac{-p_{ij}\exp(-\lambda_{ij})}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})} + (1-\delta_{ij}) \left[\frac{y_{ij}}{\lambda_{ij}} - 1\right]  \\
-\frac{\partial p_{ij}}{\partial \beta_0} &= \frac{T_1}{(1+ T_1)^2} \\
-\frac{\partial p_{ij}}{\partial \beta_1} &= x_{ij} \frac{T_1}{(1+ T_1)^2} \\
-\frac{\partial \lambda_{ij}}{\partial \beta_2} &= T_2\\
-\frac{\partial \lambda_{ij}}{\partial \beta_3} &= x_{ij} T_2\\
+\frac{\partial p_{ij}}{\partial \beta_{0j}} &= \frac{T_1}{(1+ T_1)^2} \\
+\frac{\partial p_{ij}}{\partial \beta_{1j}} &= x_{ij} \frac{T_1}{(1+ T_1)^2} \\
+\frac{\partial \lambda_{ij}}{\partial \beta_{2j}} &= T_2\\
+\frac{\partial \lambda_{ij}}{\partial \beta_{3j}} &= x_{ij} T_2\\
 \frac{\partial^2 l_{ij}}{\partial p_{ij}^2} &=  -\delta_{ij} \left(\frac{\exp(-\lambda_{ij}) - 1}{(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})}\right)^2 - (1-\delta_{ij}) \frac{1}{p_{ij}^2}\\
 \frac{\partial^2 l_{ij}}{\partial p_{ij} \partial \lambda_{ij}} &=  -\delta_{ij} \frac{\exp(-\lambda_{ij})}{((1-p_{ij}) + p_{ij} \exp(-\lambda_{ij}))^2} \\
 \frac{\partial^2 l_j}{\partial \lambda_{ij}^2} &=  \delta_{ij} \frac{p_{ij}\exp(-\lambda_{ij}) - p_{ij}^2\exp(-\lambda_{ij})}{((1-p_{ij}) + p_{ij} \exp(-\lambda_{ij}))^2} - (1-\delta_{ij}) \left[\frac{y_{ij}}{\lambda_{ij}^2}\right] \\
-\frac{\partial^2 p_{ij}}{\partial \beta_0 \partial \beta_0} &= \frac{(1-T_1)T_1}{(1+T_1)^3}\\
-\frac{\partial^2 p_{ij}}{\partial \beta_0 \partial \beta_1} &= x_{ij}\frac{(1-T_1)T_1}{(1+T_1)^3}\\
-\frac{\partial^2 p_{ij}}{\partial \beta_1 \partial \beta_1} &= x_{ij}^2\frac{(1-T_1)T_1}{(1+T_1)^3}\\
-\frac{\partial^2 \lambda_{ij}}{\partial \beta_2 \partial \beta_2} &= T_2\\
-\frac{\partial^2 \lambda_{ij}}{\partial \beta_2 \partial \beta_3} &= x_{ij}T_2\\
-\frac{\partial^2 \lambda_{ij}}{\partial \beta_3 \partial \beta_3} &= x_{ij}^2 T_2
+\frac{\partial^2 p_{ij}}{\partial \beta_{0j} \partial \beta_{0j}} &= \frac{(1-T_1)T_1}{(1+T_1)^3}\\
+\frac{\partial^2 p_{ij}}{\partial \beta_{0j} \partial \beta_{1j}} &= x_{ij}\frac{(1-T_1)T_1}{(1+T_1)^3}\\
+\frac{\partial^2 p_{ij}}{\partial \beta_{1j} \partial \beta_{1j}} &= x_{ij}^2\frac{(1-T_1)T_1}{(1+T_1)^3}\\
+\frac{\partial^2 \lambda_{ij}}{\partial \beta_{2j} \partial \beta_{2j}} &= T_2\\
+\frac{\partial^2 \lambda_{ij}}{\partial \beta_{2j} \partial \beta_{3j}} &= x_{ij}T_2\\
+\frac{\partial^2 \lambda_{ij}}{\partial \beta_{3j} \partial \beta_{3j}} &= x_{ij}^2 T_2
 \end{align*}
 Where the remaining partial derivatives are zero.
 

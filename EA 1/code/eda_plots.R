@@ -15,6 +15,13 @@ plot_density <- ggplot(aes(value, group=store), data=melt(dat.orig[,-c(2, 3, 6, 
   geom_line(alpha=.1, stat='density') + 
   facet_wrap(~variable, scales='free')
 
+plot_density_zoom1 <- ggplot(aes(mvm, group=store), data=dat.orig[, c(1,4)]) + 
+  geom_line(alpha=.1, stat='density') +
+  xlim(c(0,1))
+plot_density_zoom2 <- ggplot(aes(mvm, group=store), data=dat.orig[, c(1,4)]) + 
+  geom_line(alpha=.1, stat='density') +
+  xlim(c(1,25))
+
 #### Plot Price vs. Volume ####
 ## Sample 4 stores
 stores4<-samp_store(4, 2, dat=dat)

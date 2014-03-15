@@ -123,6 +123,8 @@ profile.phi.results <- ldply(phis, function(phi) {
 })
 
 
+optim(c(0,0,0,0), function(u) -loglik(u, dat=dat, phi=phi)) 
+
 store1 <- samp_store(1, 1, dat)
 store1_opt <- optim(c(0,0,0,0), function(u) -loglik(u, dat=store1, phi=1), hessian=TRUE)
 ders.zipg(store1_opt$par, store1, 1)

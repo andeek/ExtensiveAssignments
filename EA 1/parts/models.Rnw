@@ -1,3 +1,5 @@
+In this section we detail the model formulation for each of our three models. The setup of random variables, as well as their distributions are discussed below. For detetails fo these models, including first and second derivatives used to fit the models, see the appendices.
+
 \subsection{Simple Poisson}
 
 \subsubsection{Model}
@@ -9,15 +11,15 @@ Y_{ij} & \stackrel{\text{indep}}{\sim} \text{Pois}(\lambda_{ij}) \\
 \subsubsection{Systematic Components}
 We would like to have the parameters $\lambda_{ij}$ from the Poisson portion of the model to be further modeled as a function of price ($x_{ij}$). So, we'll model the expected values of $Y_{ij}$ as inverse link functions of the simple regression equations. We will use a log-link for $\lambda_{ij}$, which yields the following values.
 \begin{align*}
-\log(\lambda_{ij}) &= \beta_0 + \beta_1 x_{ij} \\
-\Rightarrow\lambda_{ij} &= \exp(\beta_0 + \beta_1 x_{ij})
+\log(\lambda_{ij}) &= \beta_{0j} + \beta_{1j} x_{ij} \\
+\Rightarrow\lambda_{ij} &= \exp(\beta_{0j} + \beta_{1j} x_{ij})
 \end{align*}
 
 \subsubsection{Likelihood}
 This yields a likelihood for store $j$ as
 \begin{align*}
-L_j(\beta_0, \beta_1) &= f(y_{1j}, \dots, y_{{n_j},j} | \beta_0, \beta_1) \\
-&= \prod\limits_{i=1}^{n_j} f(y_{ij}|\beta_0, \beta_1) \tag{\text{independence}} \\
+L_j(\beta_{0j}, \beta_{1j}) &= f(y_{1j}, \dots, y_{{n_j},j} | \beta_{0j}, \beta_{1j}) \\
+&= \prod\limits_{i=1}^{n_j} f(y_{ij}|\beta_{0j}, \beta_{1j}) \tag{\text{independence}} \\
 &= \prod\limits_{i=1}^{n_j} \frac{p_{ij}}{y_{ij} !} \lambda_{ij}^{y_{ij}}\exp(-\lambda_{ij})
 \end{align*}
 
@@ -52,23 +54,23 @@ We would like to have both the parameters $p_{ij}$ from the Bernoulli distributi
 \end{align*}
 We will use a logit-link for $p_{ij}$ and a log-link for $\lambda_{ij}$, which yields the following values.
 \begin{align*}
-\log\left( \frac{p_{ij}}{1-p_{ij}}\right) &= \beta_0 + \beta_1 x_{ij} \\ 
-\Rightarrow p_{ij} &= \frac{\exp(\beta_0 + \beta_1 x_{ij})}{1 + \exp(\beta_0 + \beta_1 x_{ij})} \\
+\log\left( \frac{p_{ij}}{1-p_{ij}}\right) &= \beta_{0j} + \beta_{1j} x_{ij} \\ 
+\Rightarrow p_{ij} &= \frac{\exp(\beta_{0j} + \beta_{1j} x_{ij})}{1 + \exp(\beta_{0j} + \beta_{1j} x_{ij})} \\
 ~\\
-\log(\lambda_{ij}) &= \beta_2 + \beta_3 x_{ij} \\
-\Rightarrow\lambda_{ij} &= \exp(\beta_2 + \beta_3 x_{ij}) \\
+\log(\lambda_{ij}) &= \beta_{2j} + \beta_{3j} x_{ij} \\
+\Rightarrow\lambda_{ij} &= \exp(\beta_{2j} + \beta_{3j} x_{ij}) \\
 \end{align*}
 
 \subsubsection{Likelihood}
-To obtain the store likelihood $L_j(\beta_0, \beta_1, \beta_2, \beta_3, \beta_4)$, first we will write the joint density for store $j$.
+To obtain the store likelihood $L_j(\beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}, \beta_4)$, first we will write the joint density for store $j$.
 \begin{align*}
-L_j(\beta_0, \beta_1, \beta_2, \beta_3) &= f(y_{1j}, \dots, y_{{n_j},j} | \beta_0, \beta_1, \beta_2, \beta_3) \\
-&= \prod\limits_{i=1}^{n_j} f(y_{ij}|\beta_0, \beta_1, \beta_2, \beta_3) \tag{\text{independence}} \\
+L_j(\beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}) &= f(y_{1j}, \dots, y_{{n_j},j} | \beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}) \\
+&= \prod\limits_{i=1}^{n_j} f(y_{ij}|\beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}) \tag{\text{independence}} \\
 &= \prod\limits_{i=1}^{n_j} \left(\left[(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})\right]^{\delta_{ij}} \left[ \frac{p_{ij}}{y_{ij} !} \lambda_{ij}^{y_{ij}}\exp(-\lambda_{ij}) \right] ^{1-\delta_{ij}} \right)
 \end{align*}
-Where $p_{ij}$ and $\lambda_{ij}$ are functions of $x_ij$ and $\beta_0, \dots, \beta_3$. Then the log-likelihood function can be written as the following.
+Where $p_{ij}$ and $\lambda_{ij}$ are functions of $x_ij$ and $\beta_{0j}, \dots, \beta_{3j}$. Then the log-likelihood function can be written as the following.
 \begin{align*}
-l_j(\beta_0, \beta_1, \beta_2, \beta_3, \beta_4) &= \sum\limits_{i=1}^{n_j} \left(\delta_{ij} \log\left[(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})\right] + (1-\delta_{ij}) \left[ \log (p_{ij}) - \log(y_{ij} !) + y_{ij}\log(\lambda_{ij})-\lambda_{ij} \right] \right)
+l_j(\beta_{0j}, \beta_{1j}, \beta_{2j}, \beta_{3j}, \beta_4) &= \sum\limits_{i=1}^{n_j} \left(\delta_{ij} \log\left[(1-p_{ij}) + p_{ij} \exp(-\lambda_{ij})\right] + (1-\delta_{ij}) \left[ \log (p_{ij}) - \log(y_{ij} !) + y_{ij}\log(\lambda_{ij})-\lambda_{ij} \right] \right)
 \end{align*}
 
 \subsection{Regional Zero-Inflated Poisson}
