@@ -57,8 +57,9 @@ source("code/newtraph_kaiser.R")
 \subsection{Residual Analysis}
 <<residual, child='parts/residuals.Rnw', eval=TRUE>>=
 @
-
 \section{Conclusion} 
+<<conclusion, child='parts/conclusion.Rnw', eval=TRUE>>=
+@
 
 \clearpage
 \begin{appendices}

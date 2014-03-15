@@ -1,7 +1,6 @@
 ### Residuals ###
-
-source("../code/pois_reg_run.R")
-source("../code/zipois_reg_run.R")
+# source("../code/pois_reg_run.R")
+# source("../code/zipois_reg_run.R")
 
 est.pois <- as.data.frame(est.pois)
 est.pois$store <- as.character(rownames(est.pois))
@@ -37,7 +36,7 @@ plot_D_resids <- function(store_id, deviance){
   print(g)
 }
 
-storeid_4 <- unique(laply(strsplit(stores4$store, ":"), function(x) as.numeric(x[2])))        
+storeid_4 <- c(1065, 1075, 1416, 1481)
                     
 stand_resid_plot_price <- ggplot() + 
   geom_jitter(aes(price, (mvm-lambda)/sqrt(lambda)), colour="grey", data=input[input$store%in% storeid_4,]) +
