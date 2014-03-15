@@ -48,6 +48,14 @@ p(\boldsymbol{\beta}, \boldsymbol{\sigma}, y, x)\\
     &=(\sigma^2_k)^{-(n(a+3/2)-1) - 1} \text{exp} \left\{-\frac{1}{\sigma^2_k} \sum_{j=1}^J\left(\frac{\beta^2_{kj}}{2}\right) + b \right\}\\
   \implies & \sigma^2_k |\boldsymbol{\beta}, \sigma_{-k}, x, y \sim Inv\text{-}Gamma\left(n(a+3/2)-1, \sum_{j=1}^J\left(\frac{\beta^2_{kj}}{2}\right) + b \right)
 \end{align*}
+
+\subsection{Results}
+<<mcmc_res_results, results='asis', echo=FALSE>>=
+est.bayes <- data.frame(est.bayes)
+est.bayes$store <- rownames(est.bayes)
+print(xtable(cbind(est.bayes[1:81,], rbind(est.bayes[82:161,],c(NA,NA))), align="l|ccccc|ccccc|"), table.placement='H', include.rownames=FALSE, tabular.environment="longtable",floating=FALSE)
+@
+
 \subsection{Code}
 <<code_appendix_regional, echo=FALSE>>=
 read_chunk("../code/mcmc_clean.R", labels = 'mcmc_clean-source')
