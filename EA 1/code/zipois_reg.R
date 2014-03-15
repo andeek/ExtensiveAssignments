@@ -1,8 +1,8 @@
 ###Zero-Inflated Poisson Model 
- source("code/library.R")
- source("code/data_format.R")
- source("code/helpers.R")
- source("code/newtraph_kaiser.R")
+# source("code/library.R")
+# source("code/data_format.R")
+# source("code/helpers.R")
+# source("code/newtraph_kaiser.R")
 
 #### Function for newtraph ####
 ders.zip <- function(ps, dat) {
@@ -165,7 +165,7 @@ generate_data_zip<-function(store_dat, b, nsets=100){
 gens_zip<-list(NA) 
 z<-unique(dat$store)
 for(i in 1:length(z)){
-  gens_zip[[i]]<-generate_data_zip(dat[dat$store==z[i],], as.numeric(zpois.mles[1,-1]), nsets=1000)  
+  gens_zip[[i]]<-generate_data_zip(dat[dat$store==z[i],], as.numeric(zpois.mles[1,-1]), nsets=500)  
 cat(i, "\r")
 }
 

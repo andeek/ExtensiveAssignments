@@ -1,35 +1,38 @@
 ### Code for MCMC for Regional Model ###
-# source("code/library.R")
-# source("code/data_format.R")
-# source("code/helpers.R")
+#source('/code/library.R')
+#source('/code/data_format.R')
+#source('/code/helpers.R')
+#load('/data/res1.rda)
+#load('/data/res1.rda)
+#load('/data/res1.rda)
 
 #### Conditional Distributions ####
 cond_b0 <- function(beta0, beta1, beta2, beta3, sigma0, x, y){
   delta <- y==0
-  p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
-  lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(beta0)^2/sigma0^2)
+  p <- exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
+  lambda <- exp(beta2 + beta3*x)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p)) - 1/2*(beta0)^2/sigma0^2
 }
 
 cond_b1 <- function(beta0, beta1, beta2, beta3, sigma1, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p) - 1/2*(beta1)^2/sigma1^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*log(p)) - 1/2*(beta1)^2/sigma1^2
 }
 
 cond_b2 <- function(beta0, beta1, beta2, beta3, sigma2, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(beta2)^2/sigma2^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda)) - 1/2*(beta2)^2/sigma2^2
 }
 
 cond_b3 <- function(beta0, beta1, beta2, beta3, sigma3, x, y){
   delta <- y==0
   p<-exp(beta0 + beta1*x)/(1+exp(beta0 + beta1*x))
   lambda<-exp(beta2 + beta3*x)
-  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda) - 1/2*(beta3)^2/sigma3^2)
+  sum(delta*log(1-p+p*exp(-lambda)) + (1-delta)*(y*(beta2+beta3*x) - lambda)) - 1/2*(beta3)^2/sigma3^2
 }
 
 #### Sampling Functions ####
@@ -79,7 +82,7 @@ sample_beta3 <- function(y, x, beta0, beta1, beta2, beta3, sigma3, sigma03, b3) 
 
 sample_sigma<-function(z, beta, a0, g0){
   a<-length(z)*(a0+3/2)-1
-  b<-sum(beta^2)/2 + g0
+  b<-sum(beta^2/2) + g0
   sqrt(1/rgamma(1, a, b))
 }
 
@@ -99,8 +102,10 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
   beta3_keep[1,] <- beta3
   sigma_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=4)
   sigma_keep[1,] <- c(sigma0, sigma1, sigma2, sigma3)
+  sigmat_keep <- matrix(numeric(n.reps), nrow=n.reps, ncol=4)
+  sigma_keep[1,] <- c(sigma00, sigma01, sigma02, sigma03)
   
-  for (i in 1:n.reps) {      
+  for (i in 2:n.reps) {      
     for(j in 1:length(z)){
       y<-dat[dat$store==z[j],]$mvm
       x<-dat[dat$store==z[j],]$price
@@ -115,27 +120,27 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
       beta3[j] <- sample_beta3(y, x, beta0[j], beta1[j], beta2[j], beta3[j], sigma3, sigma03, b3)
     
       if (tune) {
-        if (beta0[j]==beta0_old) {
+        if(beta0[j]==beta0_old){
           sigma00 = sigma00/1.1 
-        } else {
+        }else{
           sigma00 = sigma00*1.1
         }
         
-        if (beta1[j]==beta1_old) {
+        if(beta1[j]==beta1_old){
           sigma01 = sigma01/1.1 
-        } else {
+        }else{
           sigma01 = sigma01*1.1
         }
         
-        if (beta2[j]==beta2_old) {
+        if(beta2[j]==beta2_old){
           sigma02 = sigma02/1.1 
-        } else {
+        }else{
           sigma02 = sigma02*1.1
         }
         
-        if (beta3[j]==beta3_old) {
+        if(beta3[j]==beta3_old){
           sigma03 = sigma03/1.1 
-        } else {
+        }else{
           sigma03 = sigma03*1.1
         }
       }
@@ -151,24 +156,51 @@ run_mcmc = function(dat, beta0, beta1, beta2, beta3,
     beta2_keep[i,] = beta2
     beta3_keep[i,] = beta3
     sigma_keep[i,] = c(sigma0, sigma1, sigma2, sigma3)
+    sigmat_keep[i,] = c(sigma00, sigma01, sigma02, sigma03)
+    
     if(counter){
       cat("\r")
       cat("Iter:", i, "\r")
     }
   }
-  return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep))
+  return(list(beta0=beta0_keep, beta1=beta1_keep, beta2=beta2_keep, beta3=beta3_keep, sigma=sigma_keep, sigmat=sigmat_keep))
 }
 
+
+
 #### Run 3 Chains ####
-res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=1500, a=0.5, b=0.5)
+res1 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=1, sigma1=1, sigma2=1, sigma3=1, s=1,
+                n.reps=3000, a=0.5, b=0.5)
 
-res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=1500, a=0.5, b=0.5)
+res2 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=1, sigma1=6, sigma2=3, sigma3=2, s=1,
+                n.reps=3000, a=0.5, b=0.5)
 
-res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),-2,2), beta1=runif(length(unique(dat$store)),-2,2), beta2=runif(length(unique(dat$store)),-2,2), beta3=runif(length(unique(dat$store)),-2,2),
-                sigma0=10, sigma1=10, sigma2=10, sigma3=10, s=100,
-                n.reps=1500, a=0.5, b=0.5)
+res3 <- run_mcmc(dat=dat, beta0=runif(length(unique(dat$store)),5,8), beta1=runif(length(unique(dat$store)),-12,-8), beta2=runif(length(unique(dat$store)),5,8), beta3=runif(length(unique(dat$store)),-10,-8),
+                sigma0=6, sigma1=5, sigma2=8, sigma3=10, s=1,
+                n.reps=3000, a=0.5, b=0.5)
 
+#### Get Estimates and CI's ####
+#### Median and CI's for each store ####
+beta0<-rbind(res1$beta0[1000:3000,], res2$beta0[1000:3000,], res3$beta0[1000:3000,])
+meds_b0<-apply(beta0, 2, median)
+cis_b0<-apply(beta0, 2, function(u) sort(u)[c(150,5850)])
+
+beta1<-rbind(res1$beta1[1000:3000,], res2$beta1[1000:3000,], res3$beta1[1000:3000,])
+meds_b1<-apply(beta1, 2, median)
+cis_b1<-apply(beta1, 2, function(u) sort(u)[c(150,5850)])
+
+beta2<-rbind(res1$beta2[1000:3000,], res2$beta2[1000:3000,], res3$beta2[1000:3000,])
+meds_b2<-apply(beta2, 2, median)
+cis_b2<-apply(beta2, 2, function(u) sort(u)[c(150,5850)])
+
+beta3<-rbind(res1$beta3[1000:3000,], res2$beta3[1000:3000,], res3$beta3[1000:3000,])
+meds_b3<-apply(beta3, 2, median)
+cis_b3<-apply(beta3, 2, function(u) sort(u)[c(150,5850)])
+
+est.bayes<-cbind(b0=meds_b0, b1=meds_b1, b2=meds_b2, b3=meds_b3)
+row.names(est.bayes)<-unique(dat$store)
+cis.bayes<-cbind(t(cis_b0), t(cis_b1), t(cis_b2), t(cis_b3))
+row.names(cis.bayes)<-unique(dat$store)
+names(cis.bayes) <- c("b0_l", "b0_u","b1_l", "b1_u","b2_l", "b2_u","b3_l", "b3_u")

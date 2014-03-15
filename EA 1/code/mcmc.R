@@ -226,8 +226,34 @@ load("C:/Users/Maggie/Dropbox/Stat 601/Extensive HW1/res2.rda")
 load("C:/Users/Maggie/Dropbox/Stat 601/Extensive HW1/res3.rda")
 
 
-beta0.list = mcmc.list(mcmc(res1$beta3[,4]),
-                       mcmc(res2$beta3[,4]),
-                       mcmc(res3$beta3[,4]))
+beta0.list = mcmc.list(mcmc(res1$beta0[,2]),
+                       mcmc(res2$beta0[,2]),
+                       mcmc(res3$beta0[,2]))
 
 plot(beta0.list, smooth=F, density=F, auto.layout=F, main="beta", lwd=2, ylab="iterations")
+
+#### Median and CI's for each store ####
+beta0<-rbind(res1$beta0[1000:3000,], res2$beta0[1000:3000,], res3$beta0[1000:3000,])
+meds_b0<-apply(beta0, 2, median)
+cis_b0<-apply(beta0, 2, function(u) sort(u)[c(150,5850)])
+
+beta1<-rbind(res1$beta1[1000:3000,], res2$beta1[1000:3000,], res3$beta1[1000:3000,])
+meds_b1<-apply(beta1, 2, median)
+cis_b1<-apply(beta1, 2, function(u) sort(u)[c(150,5850)])
+
+beta2<-rbind(res1$beta2[1000:3000,], res2$beta2[1000:3000,], res3$beta2[1000:3000,])
+meds_b2<-apply(beta2, 2, median)
+cis_b2<-apply(beta2, 2, function(u) sort(u)[c(150,5850)])
+
+beta3<-rbind(res1$beta3[1000:3000,], res2$beta3[1000:3000,], res3$beta3[1000:3000,])
+meds_b3<-apply(beta3, 2, median)
+cis_b3<-apply(beta3, 2, function(u) sort(u)[c(150,5850)])
+
+est.bayes<-cbind(b0=meds_b0, b1=meds_b1, b2=meds_b2, b3=meds_b3)
+row.names(est.bayes)<-unique(dat$store)
+cis.bayes<-cbind(t(cis_b0), t(cis_b1), t(cis_b2), t(cis_b3))
+row.names(cis.bayes)<-unique(dat$store)
+names(cis.bayes) <- c("b0_l", "b0_u","b1_l", "b1_u","b2_l", "b2_u","b3_l", "b3_u")
+save(est.bayes, cis.bayes, file="bayes_ests.rda")
+
+
