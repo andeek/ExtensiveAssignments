@@ -1,6 +1,7 @@
 <<runmodels, echo=FALSE>>=
 source("../code/pois_reg_run.R")
 source("../code/zipois_reg_run.R")
+source("../code/mcmc_plots.R")
 @
 In this section we present the results from each model in a summarized form. The full set of results can be found in the appendices.
 \subsection{Simple Poisson}
@@ -28,6 +29,31 @@ print(xtable(summary(zpois.mles[,-1]), label='tab:zpois_mles', caption='Summary 
 We can interpret the regression coefficients as follows: given that there is consumer interest, for a one cent increase in price of green beans, the expected units of green beans sold in a day is expected to change by a multiplicative factor of between \Sexpr{exp(min(zpois.mles$beta_3))} and \Sexpr{exp(max(zpois.mles$beta_3))} for any store. Additionally, for a one cent increase in price of green beans, the expected consumer interest odds will change by a multiplicative factor of between \Sexpr{exp(min(zpois.mles$beta_1))} and \Sexpr{exp(max(zpois.mles$beta_1))}.
 
 \subsection{Regional Zero-Inflated Poisson}
+Estimation of the parameters of the Bayesian regional model was accomplished using Markov Chain Monte Carlo methods. Since proper priors were used on the $\beta_{kj}$'s and $\sigma^2_k$'s, the joint distribution, $p(\boldsympol{\beta}, \boldsymbol{\sigma}, x, y)$ exists. The derivations for the full conditional distributions needed for $\beta_{kj}$, and $\sigma^2_k$, $k=0,1,2,3$, and $j=1,...,161$ are shown in in Appendix C. The full conditional distributions for $\beta_{kj}$, $k=0,1,2,3$ were not available as known distributions, so a Metropolis-within-Gibbs sampler was implemented. Target distributions for the Metropolis algorithms for $\beta_{kj}$ were defined as $N(0, \sigma^2_{0k})$ where the $\sigma^2_k$'s were tuned to result in acceptance rates of approximately 0.43 - 0.5 across $j=1,...,161$. Three chains of simulations were run from relatively diffuse starting values so investigate convergence.
+
+Trace plots of parameter estimates suggested a burn-in of 1000 iterations was reasonable for each, chain. the remaining 2000 simulation from the joint distributions from each chain (resulting in 6000 simulations) were used for estimation. A sample of trace plots for one store (ID: 1009, index $j=1$) are shown in Figure \ref{fig:trace_b}.
+
+\begin{figure}[H]
+  \centering{\includegraphics[width=\textwidth]{trace_b.png}}
+  \caption{Traceplots for $\beta_{01}$, $\beta_{11}$, $\beta_{21}$, $\beta_{31}$, for Store 1009.}
+  \label{fig:trace_b}
+\end{figure}
+
+\begin{figure}[H]
+  \centering{\includegraphics[width=\textwidth]{trace_sigma.png}}
+  \caption{Traceplots for $\sigma_{0}$, $\sigma_{1}$, $\sigma_{2}$, $\sigma_{3}$, for Store 1009.}
+  \label{fig:trace_sigma}
+\end{figure}
+
+Simulations of the marginals of $\beta_0$'s and $\beta_1$'s did not appear to converge as easily and for the $\beta_2$'s and $\beta_3$'s. This was possibly due to the Metropolis algorithms not resulting in jumps that moved reasonably far across the parameter space, or that the chains needed to be run longer. Computational time was expensive for this model, however, due to the number of stores and parameters. We proceed with these simulations to explore the regional model with the caution of possible lack of convergence.
+
+Estimates of $\beta_{0j}$, $\beta_{1j}$, $\beta_{2j}$, and $\beta_{3j}$ for each store were constructed as the median of the 6000 simulations from the joint posterior distribution. The distribution of median estimates are shown in Figure \ref{fig:bayes_coef_dist}. 95\% credible intervals were computed in a similar manner as the estimates.  
+
+<<bayes_coef_dist, fig.pos='H', fig.cap='Distribution of median estimates for regression coefficients in the regional zero-inflated poisson model.', out.width='\\textwidth', message=FALSE, echo=FALSE, fig.height=4,>>=
+bayes.coef.dist
+@
+
+
 
 \begin{table}[H]
 \centering
@@ -49,4 +75,5 @@ Store ID & Model & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ \\
 & Regional & 6.48 & -8.10 & 6.87 & -8.38 \\ \hline
 \hline
 \end{tabular}
+\caption{Parameter estimates for $\beta_0$, $\beta_1$, $\beta_2$, and $\beta_3$ for the Poisson, ZIP, and regional models, for the four stores considered earlier.}
 \end{table}
