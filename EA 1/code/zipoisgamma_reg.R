@@ -114,16 +114,48 @@ loglik <- function(par, dat, phi){
   sum(delta*log(1-p + p*(1/(1+phi))^(mu/phi)) + (1-delta)*(log(p) - lfactorial(y) - lgamma(mu/phi) - mu/phi*log(phi) + lgamma(y + mu/phi) + (y+mu/phi)*log(phi/(1+phi))))
 }
 
+loglik.zinb <- function(par, dat, phi){
+  b0<-par[1]
+  b1<-par[2]
+  b2<-par[3]
+  b3<-par[4]
+  
+  x <- dat$price
+  y <- dat$mvm
+  
+  T1 <- exp(b0 + b1*x)
+  T2 <- exp(b2 + b3*x)  
+  
+  p <- T1/(1+T1)
+  mu <- T2
+  
+  delta<-rep(0,length(y))
+  delta[y==0]<-1
+  
+  sum(delta*log(1-p + p*dnbinom(0, mu/phi, 1/(1+phi))) + (1-delta)*log(dnbinom(y, mu/phi, 1/(1+phi))))
+}
+
 ## profile out phi
-phis <- c(seq(0.001, 0.019, by=.001), seq(1.01, 1.05, by = .005))
+phis <- seq(1.01, 2.01, by=.1)
 profile.phi.results <- ldply(phis, function(phi) {
   cat(paste("phi:", phi))
-  zipoisgamma_NR <- optim(c(0,0,0,0), function(u) -loglik(u, dat=dat, phi=phi)) 
+  try({
+  zipoisgamma_NR <- optim(c(-5,5,-5,5), function(u) -loglik.zinb(u, dat=dat, phi=phi)) 
   c(phi = phi, loglik = zipoisgamma_NR$value, b0 = zipoisgamma_NR$par[1], b1 = zipoisgamma_NR$par[2], b2 = zipoisgamma_NR$par[3], b3 = zipoisgamma_NR$par[4], converge=zipoisgamma_NR$convergence)
+  })
+})
+
+phis <- seq(.98, 1.1, by=.01)
+profile.phi.results2 <- ldply(phis, function(phi) {
+  cat(paste("phi:", phi))
+  try({
+    zipoisgamma_NR <- optim(c(-5,5,-5,5), function(u) -loglik.zinb(u, dat=dat, phi=phi)) 
+    c(phi = phi, loglik = zipoisgamma_NR$value, b0 = zipoisgamma_NR$par[1], b1 = zipoisgamma_NR$par[2], b2 = zipoisgamma_NR$par[3], b3 = zipoisgamma_NR$par[4], converge=zipoisgamma_NR$convergence)
+  })
 })
 
 
-optim(c(0,0,0,0), function(u) -loglik(u, dat=dat, phi=phi)) 
+optim(c(0,0,0,0), function(u) -loglik.zinb(u, dat=dat, phi=phi)) 
 
 store1 <- samp_store(1, 1, dat)
 store1_opt <- optim(c(0,0,0,0), function(u) -loglik(u, dat=store1, phi=1), hessian=TRUE)

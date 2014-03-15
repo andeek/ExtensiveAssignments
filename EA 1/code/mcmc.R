@@ -273,28 +273,6 @@ for(i in 1:4){
   ests_dat<-rbind(ests_dat, ests1)
 }
 
-\begin{table}[H]
-\centering
-\begin{tabular}{rrrrrr}
-\hline
-Store ID & Model & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ \\ 
-\hline
-1065 & Poisson & 7.96 & -11.60 &  &  \\ 
-& ZIP & 10.28 & -15.55 & 7.04 & -9.28 \\ 
-& Regional & 7.65 & -11.43 & 7.07 & -9.35 \\ \hline \hline
-1075 & Poisson & 8.64 & -12.19 &  &  \\ 
-& ZIP& 18.53 & -29.24 & 8.35 & -11.44 \\ 
-& Regional & 7.70 & -10.36 & 8.34 & -11.40 \\ \hline \hline
-1416 & Poisson & 8.12 & -10.05 &  &  \\ 
-& ZIP & 6.51 & -5.24 & 8.08 & -9.92 \\ 
-& Regional & 4.57 & -1.68 & 8.09 & -9.95 \\ \hline \hline
-1481 & Poisson & 7.28 & -9.38 &  &  \\ 
-& ZIP & 8.00 & -10.67 & 6.90 & -8.44 \\ 
-& Regional & 6.48 & -8.10 & 6.87 & -8.38 \\ \hline
-\hline
-\end{tabular}
-\end{table}
 
-#### Generate Data ####
 
 
