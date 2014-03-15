@@ -1,4 +1,4 @@
-In this section we detail the model formulation for each of our three models. The setup of random variables, as well as their distributions are discussed below. For detetails fo these models, including first and second derivatives used to fit the models, see the appendices.
+In this section we detail the model formulation for each of our three models. The setup of random variables, as well as their distributions are discussed below. Each model assumes independence over time. For further details of these models, including first and second derivatives used to fit the models, see the appendices.
 
 \subsection{Simple Poisson}
 We will start by formulating a simple Poisson model for each store separately. This baseline model will be used later in comparison with more complex models.
