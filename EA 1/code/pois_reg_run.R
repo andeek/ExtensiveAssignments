@@ -1,4 +1,4 @@
-load('data/fit.pois.rda')
+load('../data/fit.pois.rda')
 rmse.pois<-round(as.numeric(sapply(fit.pois, rmse)),3)
 
 ### Coefficients ###
