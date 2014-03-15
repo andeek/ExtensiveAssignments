@@ -46,5 +46,5 @@ plot_hist_4 <- ggplot(stores4) +
 plot_price_mvm_4 <- ggplot(merge(x=stores4, y=ddply(stores4, .(store, price), summarise, med_mvm = median(mvm)), all.x = TRUE, by="store")) +
   geom_point(aes(x=price.x, y=mvm, colour=store)) + 
   facet_wrap(~store, nrow=1) +
-  geom_line(aes(x=price.y, y=med_mvm, colour=store))
+  geom_line(aes(x=price.y, y=med_mvm, colour=store)) +
   theme(legend.position="none")
