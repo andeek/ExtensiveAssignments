@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx, hyperref, float, multicol, pdflscape, enumerate, paralist, longtable}
+\usepackage{amssymb,amsmath,amsthm} 
+\usepackage{parskip}
+\usepackage[backend=bibtex, natbib=true]{biblatex}
+\usepackage[toc,page]{appendix}
+
+\usepackage{color}
+\newcommand{\ak}[1]{{\color{magenta} #1}}
+\newcommand{\mj}[1]{{\color{blue} #1}}
+
+\theoremstyle{plain}
+\newtheorem{res}{Result}
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{.05cm}
+\renewcommand{\baselinestretch}{1.5}
+
+\title{Extensive Assignment 2: Flaws in a Subway \\ {STAT 601}}
+\author{Andee Kaplan \& Maggie Johnson}
+\date{April 25, 2014}
+
+\begin{document}
+
+\maketitle
+<<options, echo=FALSE>>=
+opts_chunk$set(size='footnotesize', fig.align='center')
+@
+
+<<libraries, echo=FALSE, message=FALSE, warning=FALSE>>=
+library(plyr)
+library(lubridate)
+library(ggplot2)
+library(reshape2)
+library(scales)
+library(xtable)
+
+theme_set(theme_bw(base_family="serif"))
+@
+
+<<data, echo=FALSE>>=
+subway.dat <- read.table("data/subwaydat.txt", header=TRUE)
+subway.dat$rate <- with(subway.dat, flaws/length)
+@
+
+\section{Introduction}
+<<intro, child='parts/introduction.Rnw', eval=TRUE>>=
+@
+
+\section{Model Formulation}
+<<models, child='parts/model.Rnw', eval=TRUE>>=
+@
+
+\section{Results}
+<<results, child='parts/results.Rnw', eval=TRUE>>=
+@
+
+\section{Conclusion} 
+<<conclusion, child='parts/conclusion.Rnw', eval=TRUE>>=
+@
+
+\end{document}

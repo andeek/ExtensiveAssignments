@@ -1,0 +1,16 @@
+Subways are an important part of many major cities in the world. For example, New York City has 842 miles of subway track as of 2014. If laid end to end, this track would stretch from New York City to Chicago. Thus, the detection of flaws in subway track is a relevant problem.
+
+In this Extensive Assignment, we examine 250 km (approximately 155 mi) of subway track that was laid in a major city with one of two types of steel, A or B. Steel type B is known to have a higher rate of flaws than steel type A, and so we are attempting to detect the probability of each section of track being from steel type B, based only on the knowledge that steel type B is more susceptible to flaws than type A.
+
+The data we are provided consists of \Sexpr{nrow(subway.dat)} sections of track. We are provided with the length of each segment and the number of flaws detected. From these two pieces of information, we construct a rate of flaw, where rate is defined as the number of flaws per km. Graphical and numeric summaries of the dataset are included below.
+
+<<data_plot, echo=FALSE, fig.height=4, fig.width=6, out.width='.6\\textwidth', fig.cap='Number of flaws per km of track for each track segment.'>>=
+qplot(x=segment, ymin=0, ymax=rate, data=subway.dat, geom="linerange") +
+  ylab("Flaws per km") + xlab("Track Segment")
+@
+
+<<data_summary, echo=FALSE>>=
+summary(subway.dat)
+@
+
+
