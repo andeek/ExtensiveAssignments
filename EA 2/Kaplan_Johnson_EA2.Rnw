@@ -40,7 +40,7 @@ theme_set(theme_bw(base_family="serif"))
 @
 
 <<data, echo=FALSE>>=
-subway.dat <- read.table("data/subwaydat.txt", header=TRUE)
+subway.dat <- read.table("data/subwaydat.txt", header=TRUE, colClasses="numeric")
 subway.dat$rate <- with(subway.dat, flaws/length)
 @
 
@@ -50,6 +50,10 @@ subway.dat$rate <- with(subway.dat, flaws/length)
 
 \section{Model Formulation}
 <<models, child='parts/model.Rnw', eval=TRUE>>=
+@
+
+\section{Estimation Approach}
+<<estimation, child='parts/estimation.Rnw', eval=TRUE>>=
 @
 
 \section{Results}

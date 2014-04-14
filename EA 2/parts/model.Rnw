@@ -1,0 +1,6 @@
+We define random variables $\{Y_i: i = 1, dots, n\}$ to be connected with the rate of flaws per km on track section $i$. In our case, $n = $\Sexpr{length(unique(subway.dat$segment))}. We assume there are two groups of track, one built with steel type A, and one with steel type B. We form a model with two different rates of flaw as a finite mixture of gamma distributions. We also assume the sections of track are independent. With $\alpha_1, \alpha_2, \beta_1, \beta_2 \in (0,\infty)$ and $0 < \phi < 1$,
+
+\begin{align*}
+h(y|\alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \phi f_1(y|\alpha_1,\beta_1) + (1-\phi)f_2(y| \alpha_1,\alpha_2) \\
+&= \phi \frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y^{\alpha_1 - 1}e^{-\beta_1 y} + (1-\phi) \frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y^{\alpha_2 - 1}e^{-\beta_2 y}
+\end{align*}
