@@ -1,0 +1,38 @@
+We will approach the problem through use of the EM algorithm, and will thus reformulate the model as a missing information problem. Define the unobserved random variables $(Z_{i,1}, Z_{i,2})^T$ where \mj{why not have just one $Z_i$, since only have two track types? Is it easier with two?} 
+\begin{align*}
+Z_{i,j} = \begin{cases}
+1 & \text{if } Y_i \text{ is from component } j \\
+0 & \text{if } Y_i \text{ is not from component } j \\
+\end{cases}
+\end{align*}
+The probability mass function of $Z_{i}$ is then
+\begin{align*}
+g(z_i|\phi) = \phi^{z_{i,1}}(1-\phi)^{z_{i,2}}
+\end{align*}
+\mj{\begin{align*}
+g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
+\end{align*}}
+
+where $z_i \in \{(1,0), (0,1)\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
+\begin{align*}
+f_i(y_i|z_i, \alpha_1,\beta_1,\alpha_2,\beta_2) &= (f_1(y_i|z_i, \alpha_1,\beta_1))^{z_{i,1}}(f_2(y_i|z_i, \alpha_2,\beta_2))^{z_{i,2}} \\
+&= \left(\frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i}\right)^{z_{i,1}}\left(\frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}\right)^{z_{i,2}}
+\end{align*}
+Then $Y_i$ and $Z_i$ have joint mixed density function
+\begin{align*}
+p_i(y_i,z_i|\alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= f_i(y_i|z_i, \alpha_1,\beta_1,\alpha_2,\beta_2)g(z_i|\phi) \\
+&= \left(\phi \frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i}\right)^{z_{i,1}}\left((1-\phi) \frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}\right)^{z_{i,2}}
+\end{align*}
+and the conditional mass function for the unobserved $Z_i$ is,
+\begin{align*}
+k_i(z_i|y_i,\alpha_1,\beta_1,\alpha_2,\beta_2,\phi)
+&= \frac{\left(\phi \frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i}\right)^{z_{i,1}}\left((1-\phi) \frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}\right)^{z_{i,2}}}{\phi \frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i} + (1-\phi) \frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}}
+\end{align*}
+
+We can now form the full observed data model, unobserved marginal model, complete data model, and conditional unoberved model, by independence:
+\begin{align*}
+f(\boldsymbol y | \boldsymbol z, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \prod\limits_{i=1}^n f_i(y_i | z_i, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) \\
+g(\boldsymbol z | \phi) &= \prod\limits_{i=1}^n g(z_i |\phi) \\
+p(\boldsymbol y , \boldsymbol z | \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \prod\limits_{i=1}^n p_i(y_i, z_i| \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) \\
+k(\boldsymbol z | \boldsymbol y, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \prod\limits_{i=1}^n k_i(z_i | y_i, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) \\
+\end{align*}
