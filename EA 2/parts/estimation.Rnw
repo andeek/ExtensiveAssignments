@@ -12,7 +12,7 @@ g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
 
 where $z_i \in \{(1,0), (0,1)\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
 \begin{align*}
-f_i(y_i|z_i, \alpha_1,\beta_1,\alpha_2,\beta_2) &= (f_1(y_i|z_i, \alpha_1,\beta_1))^{z_{i}}(f_2(y_i|z_i, \alpha_2,\beta_2))^{(1-z_{i})} \\
+f_i(y_i|z_i, \alpha_1,\beta_1,\alpha_2,\beta_2) &= f_1(y_i|z_i, \alpha_1,\beta_1)^{z_{i}}f_2(y_i|z_i, \alpha_2,\beta_2)^{(1-z_{i})} \\
 &= \left(\frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i}\right)^{z_{i}}\left(\frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}\right)^{(1-z_{i})}
 \end{align*}
 Then $Y_i$ and $Z_i$ have joint mixed density function
@@ -33,8 +33,8 @@ g(\boldsymbol z | \phi) &= \prod\limits_{i=1}^n g(z_i |\phi) \\
 p(\boldsymbol y , \boldsymbol z | \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \prod\limits_{i=1}^n p_i(y_i, z_i| \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) \\
 k(\boldsymbol z | \boldsymbol y, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) &= \prod\limits_{i=1}^n k_i(z_i | y_i, \alpha_1,\beta_1,\alpha_2,\beta_2,\phi) \\
 \end{align*}
-This, we can write the functons $L$, $Q$, and $H$ n our formulation of the EM algorthm as sums over $i$. Let $\boldsymbol theta = (\alpha_1,\beta_1,\alpha_2,\beta_2)$, then
+This, we can write the functons $L$, $Q$, and $H$ n our formulation of the EM algorthm as sums over $i$. Let $\boldsymbol \theta = (\alpha_1,\beta_1,\alpha_2,\beta_2)$, then
 \begin{align*}
-$Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{p_i(y_i, z_i|\boldsymbol \theta, \phi)\}|\boldsymbol \theta_p, \phi_p] \\
+Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{p_i(y_i, z_i|\boldsymbol \theta, \phi)\}|\boldsymbol \theta_p, \phi_p] \\
 &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{f_i(y_i| z_i,\boldsymbol \theta)\}|\boldsymbol \theta_p, \phi_p] + \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{g(z_i| \phi)\}|\boldsymbol \theta_p, \phi_p] 
 \end{align*}
