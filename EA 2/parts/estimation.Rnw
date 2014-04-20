@@ -10,7 +10,7 @@ The probability mass function of $Z_{i}$ is then
 g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
 \end{align*}
 
-where $z_i \in \{(1,0), (0,1)\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
+where $z_i \in \{0,1\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
 \begin{align*}
 f_i(y_i|z_i, \alpha_1,\beta_1,\alpha_2,\beta_2) &= f_1(y_i|z_i, \alpha_1,\beta_1)^{z_{i}}f_2(y_i|z_i, \alpha_2,\beta_2)^{(1-z_{i})} \\
 &= \left(\frac{\beta_1^{\alpha_1}}{\Gamma(\alpha_1)}y_i^{\alpha_1 - 1}e^{-\beta_1 y_i}\right)^{z_{i}}\left(\frac{\beta_2^{\alpha_2}}{\Gamma(\alpha_2)}y_i^{\alpha_2 - 1}e^{-\beta_2 y_i}\right)^{(1-z_{i})}
@@ -38,3 +38,30 @@ This, we can write the functons $L$, $Q$, and $H$ n our formulation of the EM al
 Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{p_i(y_i, z_i|\boldsymbol \theta, \phi)\}|\boldsymbol \theta_p, \phi_p] \\
 &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{f_i(y_i| z_i,\boldsymbol \theta)\}|\boldsymbol \theta_p, \phi_p] + \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{g(z_i| \phi)\}|\boldsymbol \theta_p, \phi_p] 
 \end{align*}
+And substituting the expression for $f_i$ in this expression yields,
+\begin{align*}
+\text{E}_{z|y}[\log\{f_i(y_i| z_i,\boldsymbol \theta)\}|\boldsymbol \theta_p, \phi_p] & = \text{E}_{z|y}\left[z_i \log\{f_1(y_i|\boldsymbol \theta_1)\} + (1-z_i) \log\{f_2(y_i|\boldsymbol \theta_2)\} | \boldsymbol \theta_p \phi_p \right] \\
+&= \log\{f_1(y_i|\boldsymbol \theta_1)\} \text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p) + \log\{f_2(y_i|\boldsymbol \theta_2)\} \text{E}_{z|y}(1-z_i  | \boldsymbol \theta_p \phi_p ) \\
+&= \log\{f_2(y_i|\boldsymbol \theta_2)\} + [\log\{f_1(y_i|\boldsymbol \theta_1)\} - \log\{f_2(y_i|\boldsymbol \theta_2)\}]\text{E}_{z|y}(z_i  | \boldsymbol \theta_p \phi_p ) \\
+&= \alpha_2 \log \beta_2 - \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i - \beta_2 y_i + \\
+& \qquad [\alpha_1 \log \beta_1 - \log(\Gamma(\alpha_1)) + (\alpha_1 - 1) \log y_i - \beta_1 y_i - \\
+& \qquad \qquad \alpha_2 \log \beta_2 + \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i + \beta_2 y_i]\text{E}_{z|y}(z_i  | \boldsymbol \theta_p \phi_p )
+\end{align*}
+Similarly, substituting for $g_i$ yields,
+\begin{align*}
+\text{E}_{z|y}[\log\{g(z_i| \phi)\}|\boldsymbol \theta_p, \phi_p] & = \text{E}_{z|y}[z_i\log(\phi) + (1-z_i)\log(1-\phi)|\boldsymbol \theta_p, \phi_p]\\
+&= \log(1-\phi) + \log\left(\frac{\phi}{1-\phi}\right)\text{E}_{z|y}[z_i|\boldsymbol \theta_p, \phi_p]
+\end{align*}
+Both of these expressions require only $\text{E}_{z|y}[z_i|\boldsymbol \theta_p, \phi_p]$. From the expression for $k_i$, this expectation can be calculated as
+\begin{align*}
+\text{E}_{z|y}[z_i|\boldsymbol \theta_p, \phi_p] &= \sum\limits_{z_i \in \Omega_z} \left[ \frac{\left(\phi_p \frac{\beta_{p1}^{\alpha_{p1}}}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i}\right)^{z_{i}}\left((1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}\right)^{(1-z_{i})}}{\phi_p \frac{\beta_{p1}^{\alpha_{p1} }}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i} + (1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}} z_i \right] \\
+&= \left[ \frac{\left(\phi_p \frac{\beta_{p1}^{\alpha_{p1}}}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i}\right)}{\phi_p \frac{\beta_{p1}^{\alpha_{p1} }}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i} + (1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}}\right]
+\end{align*}
+Substitution back into the expression for $Q$ yields:
+\begin{align*}
+Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n\Bigg\{\Bigg [ \alpha_2 \log \beta_2 - \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i - \beta_2 y_i + \\
+& \qquad [\alpha_1 \log \beta_1 - \log(\Gamma(\alpha_1)) + (\alpha_1 - 1) \log y_i - \beta_1 y_i - \alpha_2 \log \beta_2 + \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i + \beta_2 y_i] +\\
+& \qquad \log(1-\phi) + \log\left(\frac{\phi}{1-\phi}\right)\Bigg ] \left[ \frac{\left(\phi_p \frac{\beta_{p1}^{\alpha_{p1}}}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i}\right)}{\phi_p \frac{\beta_{p1}^{\alpha_{p1} }}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i} + (1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}}\right]\Bigg\}
+\end{align*}
+
+Computation of this expression is the E-step of one iteration in our EM algorith. The M-step is the maimization of this expression for $Q$ in $\boldsymbol \theta$ and $\phi$.
