@@ -30,7 +30,6 @@ opts_chunk$set(size='footnotesize', fig.align='center')
 
 <<libraries, echo=FALSE, message=FALSE, warning=FALSE>>=
 library(plyr)
-library(lubridate)
 library(ggplot2)
 library(reshape2)
 library(scales)

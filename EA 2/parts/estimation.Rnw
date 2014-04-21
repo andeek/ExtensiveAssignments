@@ -59,9 +59,25 @@ Both of these expressions require only $\text{E}_{z|y}[z_i|\boldsymbol \theta_p,
 \end{align*}
 Substitution back into the expression for $Q$ yields:
 \begin{align*}
-Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n\Bigg\{\Bigg [ \alpha_2 \log \beta_2 - \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i - \beta_2 y_i + \\
-& \qquad [\alpha_1 \log \beta_1 - \log(\Gamma(\alpha_1)) + (\alpha_1 - 1) \log y_i - \beta_1 y_i - \alpha_2 \log \beta_2 + \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i + \beta_2 y_i] +\\
-& \qquad \log(1-\phi) + \log\left(\frac{\phi}{1-\phi}\right)\Bigg ] \left[ \frac{\left(\phi_p \frac{\beta_{p1}^{\alpha_{p1}}}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i}\right)}{\phi_p \frac{\beta_{p1}^{\alpha_{p1} }}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i} + (1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}}\right]\Bigg\}
+Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n\Bigg\{ \alpha_2 \log \beta_2 - \log(\Gamma(\alpha_2)) + (\alpha_2 - 1) \log y_i - \beta_2 y_i + \log(1-\phi) +\\
+& \qquad \Bigg [\alpha_1 \log \beta_1 - \log(\Gamma(\alpha_1)) + (\alpha_1 - 1) \log y_i - \beta_1 y_i - \alpha_2 \log \beta_2 + \log(\Gamma(\alpha_2)) +  \\
+& \qquad (\alpha_2 - 1) \log y_i + \beta_2 y_i + \log\left(\frac{\phi}{1-\phi}\right)\Bigg ] \left[ \frac{\left(\phi_p \frac{\beta_{p1}^{\alpha_{p1}}}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i}\right)}{\phi_p \frac{\beta_{p1}^{\alpha_{p1} }}{\Gamma(\alpha_{p1})}y_i^{\alpha_{p1} - 1}e^{-\beta_{p1} y_i} + (1-\phi_p) \frac{\beta_{p2}^{\alpha_{p2} }}{\Gamma(\alpha_{p2})}y_i^{\alpha_{p2} - 1}e^{-\beta_{p2} y_i}}\right]\Bigg\}
 \end{align*}
 
-Computation of this expression is the E-step of one iteration in our EM algorith. The M-step is the maimization of this expression for $Q$ in $\boldsymbol \theta$ and $\phi$.
+Computation of this expression is the E-step of one iteration in our EM algorithm. The M-step is the maximization of this expression of $Q$ in $\boldsymbol \theta$ and $\phi$. We will use a Newton-Raphson algorithm to maximize $Q = \sum Q_i$. The first and second derivatives necessary for this step are below.
+\begin{align*}
+\frac{\partial Q_i}{\partial \alpha_1} &= \left[\log \beta_1 - \frac{d}{d\alpha_1} \log\Gamma(\alpha_1) + \log y_i \right]\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial Q_i}{\partial \alpha_2} &= \left[\log \beta_2 - \frac{d}{d\alpha_2} \log\Gamma(\alpha_2) + \log y_i \right](1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)) \\
+\frac{\partial Q_i}{\partial \beta_1} &= \left[\ \frac{\alpha_1}{\beta_1} - y_i \right]\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial Q_i}{\partial \beta_2} &= \left[\ \frac{\alpha_2}{\beta_2} - y_i \right](1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p))\\
+\frac{\partial Q_i}{\partial \phi} &= -\frac{1}{1-\phi} + \left[\frac{1}{\phi} + \frac{1}{1-\phi}\right]\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)
+~\\
+\frac{\partial^2 Q_i}{\partial \alpha_1^2} &=-\frac{d^2}{d\alpha_1} \log\Gamma(\alpha_1) \text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial^2 Q_i}{\partial \alpha_1 \partial \beta_1} &= \frac{1}{\beta_1}\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial^2 Q_i}{\partial \alpha_2^2} &=-\frac{d^2}{d\alpha_2} \log\Gamma(\alpha_2)(1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)) \\
+\frac{\partial^2 Q_i}{\partial \alpha_2 \partial \beta_2} &= \frac{1}{\beta_2} (1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)) \\
+\frac{\partial^2 Q_i}{\partial \beta_1^2} &= -\frac{\alpha_1}{\beta_1^2}\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial^2 Q_i}{\partial \beta_2^2} &= -\frac{\alpha_2}{\beta_2^2}(1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)) \\
+\frac{\partial^2 Q_i}{\partial \phi^2} &= -\frac{1}{(1-\phi)^2} + \left[\frac{1}{(1-\phi)^2} - \frac{1}{\phi^2}\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \right]
+\end{align*}
+With the remaining partial derivatives equal to zero.
