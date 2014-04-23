@@ -128,9 +128,9 @@ Where
 \end{align*}
 And finally, for $\lambda_j; j=1,2$
 \begin{align*}
-\frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= \frac{e^{-\lambda_j\gamma_i}\gamma_i^{y_i}\lambda_j^{y_i-1}}{y_i!}(\lambda_j - \gamma_i) \\
- \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= \frac{e^{-\lambda_j\gamma_i}\gamma_i^{y_i}\lambda_j^{y_i-2}}{y_i!}(\gamma_i + y_i(\lambda_j -\gamma_i) - \gamma_i\lambda_i(\lambda_j - \gamma_i))
+\frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)\\
+ \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)^2 - f_j(y_i|\gamma_i,\lambda_j)\left(\frac{y_i}{\lambda_j^2}\right)
 \end{align*}
 The observed information matrix can thus be computed by calculation/plugging in of these quantities using the estimates from the EM algorithm for $\lambda_1,\lambda_2,\phi$.
 
-Applying these procedures yields the following estimated using the convergence criterion of $\delta = 10^{-8}$.
+Applying these procedures yields the following estimates using the convergence criterion of $\delta = 10^{-8}$.

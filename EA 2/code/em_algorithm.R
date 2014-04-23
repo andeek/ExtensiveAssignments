@@ -3,16 +3,18 @@ phat_fun<-function(phi, l1, l2, y, n){
 }
 
 hessian<-function(phi, l1, l2, y, n){
-  h<-phi*(l1*n)^(y)*exp(-l1*n)/factorial(y) + (1-phi)*(l2*n)^(y)*exp(-l2*n)/factorial(y)
-  dfdlambda<-function(l){
-    exp(-l*n)*n^y*l^(y-1)*(l-n)/factorial(y)
-  }
-  df2d2lambda<-function(l){
-    exp(-l*n)*n^y*l^(y-2)*(n+y*(l-n)-n*l*(l-n))/factorial(y)
-  }
   f<-function(l){
     exp(-l*n)*(n*l)^y/factorial(y)
   }
+  h<-phi*f(l1) + (1-phi)*f(l2)
+
+  dfdlambda<-function(l){
+    f(l)*(y/l-n)
+  }
+  df2d2lambda<-function(l){
+    f(l)*(y/l-n)^2 - f(l)*(y/l^2)
+  }
+
   
   dhdl1<-phi*dfdlambda(l1)
   dhdl2<-(1-phi)*dfdlambda(l2)
@@ -31,7 +33,7 @@ hessian<-function(phi, l1, l2, y, n){
   hess13<-sum(d2dl2dphi/h - dhdl2*dhdphi/h^2)
   hess23<-sum(d2hdl1l2/h - dhdl1*dhdl2/h^2)
   hessian<-matrix(c(hess11, hess12, hess13, hess12, hess22, hess23, hess13, hess23, hess33), ncol=3)
-  return(hessian)
+  return(-hessian)
 }
 
 em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
@@ -60,11 +62,51 @@ em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
 
 ests<-em_algorithm(.5, 5, 0.01, y=subway.dat$flaws, n=subway.dat$length)
 ## Match mles from optim
+
 ## So, how do we get probability each observation is in group A?
 probs<-round(phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length),3)
 qplot(x=subway.dat$flaws, y=probs)
 subway.dat$probs<-probs
 
-hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
-# I think there must be a mistake somewhere, one positive two negative. Too tired, will check tomorrow.
+h<-hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
+lb<-ests[1:3] - qnorm(.975)*sqrt(diag(solve(h)))
+ub<-ests[1:3] + qnorm(.975)*sqrt(diag(solve(h)))
+cbind(lb,ub)
+
+### Chi-square test ###
+phi.est<-ests[1]
+l1<-ests[2]
+l2<-ests[3]
+subway.dat$expected<-probs*l1*subway.dat$length + (1-probs)*l2*subway.dat$length
+
+chi.test<-sum((subway.dat$flaws-subway.dat$expected)^2/subway.dat$expected)
+chi.test
+
+## Not valid ##
+sums.obs.exp<-ddply(subway.dat, .(length), summarize, exp=sum(expected), obs=sum(flaws))
+chi.test<-sum((sums.obs.exp$obs-sums.obs.exp$exp)^2/sums.obs.exp$exp)
+chi.test
+
+### Bootstrap CI ###
+
+### Sample from model ###
+
+n<-subway.dat$length
+ests<-NULL
+for(j in 1:1000){
+  phis<-runif(75)
+  y<-1:75
+  for(i in 1:75){
+    if(phis[i] < phi.est){
+      y[i]<-rpois(1, l1*n[i])
+    }else{
+      y[i]<-rpois(1, l2*n[i])
+    }
+  }
+  ests<-rbind(ests, c(em_algorithm(.5, 5, 0.01, y=y, n=subway.dat$length)[1:3]))
+}
+dim(ests)
+
+boot_intervals<-t(apply(ests, 2, function(u) sort(u)[c(25, 975)]))
+boot_intervals
 
