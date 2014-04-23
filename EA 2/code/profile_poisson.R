@@ -20,7 +20,13 @@ ci<-c(lambda.est$par - qnorm(0.975)*1/sqrt(lambda.est$hessian), lambda.est$par +
 
 ## Get Predictions 
 flaws$exp.counts <- lambda.est$par*flaws$length
+chi.test<-sum((flaws$flaws - flaws$exp.counts)^2/flaws$exp.counts)
+chi.test
+
+qchisq(0.975, 74)
+
 ddply(data=flaws, .(length), summarize, flaws=sum(flaws), exp.counts=sum(exp.counts))
+
 
 ### Profile phi ###
 ## I think I need constraints on lambda1, lambda2, i.e. lambda1 > lambda2 ###
