@@ -105,7 +105,32 @@ $$ \phi^{(k+1)} = \frac{1}{n}\sum_{i=1}^n \hat{p}(1|y_i, \phi^{(k)}, \lambda_1^{
 \lambda_2^{(k+1)} &= \frac{\sum\limits_{i=1}^n y_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}{\sum\limits_{i=1}^n \gamma_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}
 \end{align*}
 \end{enumerate}
-\item Iterate step 2 until $|\theta_1^{(k+1)} - \theta_1^{(k)}| \le \delta, $|\theta_2^{(k+1)} - \theta_2^{(k)}| \le \delta$, and $|\phi^{(k+1)} - \phi^{(k)}| \le \delta$
+\item Iterate step 2 until $|\theta_1^{(k+1)} - \theta_1^{(k)}| \le \delta$, $|\theta_2^{(k+1)} - \theta_2^{(k)}| \le \delta$, and $|\phi^{(k+1)} - \phi^{(k)}| \le \delta$.
 \end{enumerate}
+To compute standard errors in this example we will first derive the observed information matrix corresponding to the marginal model $h(y_i|\gamma_1,\lambda_1,\lambda_2,\phi)$. Then from expression of the log likelihood as $l(\lambda_1,\lambda_2,\phi) = \sum l_i(\lambda_1,\lambda_2,\phi) \sum \log\{h(y_i|\gamma_1,\boldsymbol \theta)\}$ for $\boldsymbol \theta=(\lambda_1,\lambda_2,\phi)$,
+\begin{align*}
+\frac{\partial l(\boldsymbol \theta)}{\partial \theta_j} &= \sum\limits_{i=1}^n \frac{\partial l_i(\boldsymbol \theta)}{\theta_j}\\
+\frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \sum\limits_{i=1}^n \frac{\partial^2 l_i(\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}\\ \\
+\frac{\partial l_i(\boldsymbol \theta)}{\theta_j} &= \frac{\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_j}}{h(y_i|\boldsymbol \theta)} \\
+\frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \frac{\frac{\partial^2 h(y_i|\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}}{h(y_i|\boldsymbol \theta)} - \frac{\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_j}\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_k}}{\{h(y_i|\boldsymbol \theta)\}^2}
+\end{align*}
+Where
+\begin{align*}
+\frac{\partial h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_1} &= \phi \frac{\partial f_1(y_i|\gamma_i,\lambda_1)}{\partial \lambda_1}\\
+\frac{\partial h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_2} &= (1-\phi) \frac{\partial f_2(y_i|\gamma_i,\lambda_2)}{\partial \lambda_2}\\
+\frac{\partial h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \phi} &= f_1(y_i|\gamma_i,\lambda_1) - f_2(y_i|\gamma_i,\lambda_2)\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_1^2} &= \phi \frac{\partial^2 f_1(y_i|\gamma_i,\lambda_1)}{\partial \lambda_1^2}\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_2^2} &= (1-\phi) \frac{\partial^2 f_2(y_i|\gamma_i,\lambda_2)}{\partial \lambda_2^2}\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \phi^2} &= 0\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_1 \partial \lambda_2} &= 0\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_1 \partial \phi} &= \frac{\partial f_1(y_i|\gamma_i,\lambda_1)}{\partial \lambda_1}\\
+\frac{\partial^2 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi)}{\partial \lambda_2 \partial \phi} &= -\frac{\partial f_2(y_i|\gamma_i,\lambda_2)}{\partial \lambda_2}
+\end{align*}
+And finally, for $\lambda_j; j=1,2$
+\begin{align*}
+\frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= \frac{e^{-\lambda_j\gamma_i}\gamma_i^{y_i}\lambda_j^{y_i-1}}{y_i!}(\lambda_j - \gamma_i) \\
+ \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= \frac{e^{-\lambda_j\gamma_i}\gamma_i^{y_i}\lambda_j^{y_i-2}}{y_i!}(\gamma_i + y_i(\lambda_j -\gamma_i) - \gamma_i\lambda_i(\lambda_j - \gamma_i))
+\end{align*}
+The observed information matrix can thus be computed by calculation/plugging in of these quantities using the estimates from the EM algorithm for $\lambda_1,\lambda_2,\phi$.
 
-
+Applying these procedures yields the following estimated using the convergence criterion of $\delta = 10^{-8}$.

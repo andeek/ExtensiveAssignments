@@ -55,17 +55,8 @@ subway.dat$rate <- with(subway.dat, flaws/length)
 <<hetero, child='parts/hetero.Rnw', eval=TRUE>>=
 @
 
-% 
-% \section{Estimation Approach}
-% <<estimation, child='parts/estimation.Rnw', eval=TRUE>>=
-% @
-% 
-% \section{Results}
-% <<results, child='parts/results.Rnw', eval=TRUE>>=
-% @
-% 
-% \section{Conclusion} 
-% <<conclusion, child='parts/conclusion.Rnw', eval=TRUE>>=
-% @
+\section{Conclusion} 
+<<conclusion, child='parts/conclusion.Rnw', eval=TRUE>>=
+@
 
 \end{document}
