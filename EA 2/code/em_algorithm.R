@@ -58,8 +58,6 @@ em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
   return(c(phi=phi2, lambda1=l1, lambda2=l2, n.iter=j))
 }
 
-em_algorithm(.1, .3, 6, y=subway.dat$flaws, n=subway.dat$length)
-
 ests<-em_algorithm(.5, 5, 0.01, y=subway.dat$flaws, n=subway.dat$length)
 ## Match mles from optim
 ## So, how do we get probability each observation is in group A?
