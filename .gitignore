@@ -5,6 +5,8 @@
 *.pdf
 *.xml
 *.gz
+*.aux
+*.out
 Kaplan_Johnson_EA1-blx.bib
 framed.sty
 .Rhistory
