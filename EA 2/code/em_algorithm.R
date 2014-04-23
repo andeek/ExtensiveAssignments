@@ -58,15 +58,15 @@ em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
   return(c(phi=phi2, lambda1=l1, lambda2=l2, n.iter=j))
 }
 
-em_algorithm(.1, .3, 6, y=flaws$flaws, n=flaws$length)
+em_algorithm(.1, .3, 6, y=subway.dat$flaws, n=subway.dat$length)
 
-ests<-em_algorithm(.5, 5, 0.01, y=flaws$flaws, n=flaws$length)
+ests<-em_algorithm(.5, 5, 0.01, y=subway.dat$flaws, n=subway.dat$length)
 ## Match mles from optim
 ## So, how do we get probability each observation is in group A?
-probs<-round(phat_fun(ests[1], ests[2], ests[3], y=flaws$flaws, n=flaws$length),3)
-qplot(x=flaws$flaws, y=probs)
-flaws$probs<-probs
+probs<-round(phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length),3)
+qplot(x=subway.dat$flaws, y=probs)
+subway.dat$probs<-probs
 
-hessian(ests[1], ests[2], ests[3], y=flaws$flaws, n=flaws$length)
+hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
 # I think there must be a mistake somewhere, one positive two negative. Too tired, will check tomorrow.
 
