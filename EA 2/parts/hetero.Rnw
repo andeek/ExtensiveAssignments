@@ -128,8 +128,8 @@ Where
 \end{align*}
 And finally, for $\lambda_j; j=1,2$
 \begin{align*}
-\frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\gamma_j} - \gamma_i\right)\\
- \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\gamma_j} - \gamma_i\right)^2 - f_j(y_i|\gamma_i,\lambda_j)\left(\frac{y_i}{\lambda_j^2}\right)
+\frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)\\
+ \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)^2 - f_j(y_i|\gamma_i,\lambda_j)\left(\frac{y_i}{\lambda_j^2}\right)
 \end{align*}
 The observed information matrix can thus be computed by calculation/plugging in of these quantities using the estimates from the EM algorithm for $\lambda_1,\lambda_2,\phi$.
 

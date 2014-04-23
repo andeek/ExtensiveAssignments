@@ -3,16 +3,18 @@ phat_fun<-function(phi, l1, l2, y, n){
 }
 
 hessian<-function(phi, l1, l2, y, n){
-  h<-phi*(l1*n)^(y)*exp(-l1*n)/factorial(y) + (1-phi)*(l2*n)^(y)*exp(-l2*n)/factorial(y)
-  dfdlambda<-function(l){
-    exp(-l*n)*n^y*l^(y-1)*(l-n)/factorial(y)
-  }
-  df2d2lambda<-function(l){
-    exp(-l*n)*n^y*l^(y-2)*(n+y*(l-n)-n*l*(l-n))/factorial(y)
-  }
   f<-function(l){
     exp(-l*n)*(n*l)^y/factorial(y)
   }
+  h<-phi*f(l1) + (1-phi)*f(l2)
+
+  dfdlambda<-function(l){
+    f(l)*(y/l-n)
+  }
+  df2d2lambda<-function(l){
+    f(l)*(y/l-n)^2 - f(l)*(y/l^2)
+  }
+
   
   dhdl1<-phi*dfdlambda(l1)
   dhdl2<-(1-phi)*dfdlambda(l2)
@@ -31,7 +33,7 @@ hessian<-function(phi, l1, l2, y, n){
   hess13<-sum(d2dl2dphi/h - dhdl2*dhdphi/h^2)
   hess23<-sum(d2hdl1l2/h - dhdl1*dhdl2/h^2)
   hessian<-matrix(c(hess11, hess12, hess13, hess12, hess22, hess23, hess13, hess23, hess33), ncol=3)
-  return(hessian)
+  return(-hessian)
 }
 
 em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
@@ -58,10 +60,9 @@ em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
   return(c(phi=phi2, lambda1=l1, lambda2=l2, n.iter=j))
 }
 
-em_algorithm(.1, .3, 6, y=subway.dat$flaws, n=subway.dat$length)
-
-ests<-em_algorithm(.5, 0.01, 5, y=subway.dat$flaws, n=subway.dat$length)
+ests<-em_algorithm(.5, 5, 0.01, y=subway.dat$flaws, n=subway.dat$length)
 ## Match mles from optim
+
 ## So, how do we get probability each observation is in group A?
 probs<-round(phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length),3)
 qplot(x=subway.dat$flaws, y=probs)
