@@ -1,0 +1,21 @@
+We define random variables $\{Y_i: i = 1, \dots, n\}$ to be connected with the number of flaws on track section $i$. In our case, $n = $\Sexpr{length(unique(subway.dat$segment))}. If all track sections have the same rate of flaws $\lambda$, we use a model that the $Y_i$ are independent with a poisson probability mass function for $\lambda > 0$,
+\begin{align*}
+f(y_i|\gamma_i, \lambda) = \frac{(\gamma_i \lambda)^{y_i}}{y_i!} e^{-\gamma_i \lambda}; \qquad y_i = 0,1,2,\dots
+\end{align*}
+with $\gamma_i$ being the length of track section $i$. The log-likelihood function for this model is,
+\begin{align*}
+l(\lambda) = \sum\limits_{i=1}^n \{ y_i \log \gamma_i + y_i \log \lambda - \log y_i! -\gamma_i \lambda\}
+\end{align*}
+From the log likelihood, the maximum likelihood estimate and the expected (Fisher) information are found to be
+\begin{align*}
+\hat{\lambda} &= \frac{\sum\limits_{i=1}^n y_i}{\sum\limits_{i=1}^n \gamma_i} \\
+\mathcal{I}(\lambda) &= \frac{1}{\lambda} \sum\limits_{i=1}^n \gamma_i
+\end{align*}
+<<est_homo, echo=FALSE>>=
+l_hat <- with(subway.dat, sum(flaws)/sum(length))
+l_interval <- c(l_hat - qnorm(.975)*sqrt(1/(1/l_hat*sum(subway.dat$length))), l_hat + qnorm(.975)*sqrt(1/(1/l_hat*sum(subway.dat$length))))
+@
+Using the data, the maximum likelihood estimate of $\lambda$ is $\hat{\lambda} = \Sexpr{round(l_hat,4)}$ with an associated Wald theory $95\%$ interval of (\Sexpr{round(l_interval[1],4)},\Sexpr{round(l_interval[2],4)}). As a quick check we can compute a Pearson Chi-square test.
+
+CHI-SQUARE TEST
+

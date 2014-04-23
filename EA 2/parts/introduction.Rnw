@@ -4,17 +4,15 @@ In this Extensive Assignment, we examine 250 km (approximately 155 mi) of subway
 
 The data we are provided consists of \Sexpr{nrow(subway.dat)} sections of track. We are provided with the length of each segment and the number of flaws detected. From these two pieces of information, we construct a rate of flaw, where rate is defined as the number of flaws per km. Graphical and numeric summaries of the dataset are included below.
 
-<<data_plot, echo=FALSE, fig.height=4, fig.width=4, out.width='.32\\textwidth', fig.cap='Graphical summaries of flaws each track segment. The first two plots look at rate of flaws per km of track, while the third plot looks at number of flaws total.', fig.show='hold', message=FALSE>>=
-qplot(x=segment, ymin=0, ymax=rate, data=subway.dat, geom="linerange") +
-  ylab("Flaws per km") + xlab("Track Segment")
-qplot(rate, data=subway.dat) + xlab("Flaws per km")
-
-qplot(flaws, data=subway.dat) + xlab("Flaws")
-
+<<data_plot, echo=FALSE, fig.height=4, fig.width=6, out.width='.6\\textwidth', fig.cap='Graphical summaries of flaws each track segment.', fig.show='hold', message=FALSE>>=
+qplot(flaws, data=subway.dat, binwidth=1) + xlab("Flaws")
 @
 
-<<data_summary, echo=FALSE>>=
-summary(subway.dat)
+<<data_summary, echo=FALSE, results='asis'>>=
+res <- as.data.frame(table(subway.dat$flaws))
+names(res) <- c("No. of Flaws", "Number of Sections")
+print(xtable(t(res)), include.colnames=FALSE)
 @
 
+From the summaries, we can see the frequency of flaws is fairly high for zero and one flaw per section and then decreases as the number of flaws increases. However, it looks like there is a second peak around 15 flaws. This could be random variation, or an indication of a mixture model with different parameter values (rates of flaws), which is our assumption from the problem statement.
 

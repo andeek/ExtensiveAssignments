@@ -1,6 +1,6 @@
-We define random variables $\{Y_i: i = 1, \dots, n\}$ to be connected with the rate of flaws per km on track section $i$. In our case, $n = $\Sexpr{length(unique(subway.dat$segment))}. We assume there are two groups of track, one built with steel type A, and one with steel type B. We form a model with two different rates of flaw as a finite mixture of exponential distributions. We also assume the sections of track are independent. With $\lambda_1, \lambda_2 \in (0,\infty)$ and $0 < \phi < 1$,
-
+We define random variables $\{Y_i: i = 1, \dots, n\}$ to be connected with the rate of flaws per km on track section $i$. In our case, $n = $\Sexpr{length(unique(subway.dat$segment))}. We assume there are two groups of track, one built with steel type A, and one with steel type B. We form a model with two different rates of flaw as a finite mixture of poisson distributions with a rate parameter. We also assume the sections of track are independent. With $\lambda_1, \lambda_2 \in (0,\infty)$ and $0 < \phi < 1$,
 \begin{align*}
-h(y|\lambda_1,\lambda_2,\phi) &= \phi f_1(y|\lambda_1) + (1-\phi)f_2(y| \lambda_2) \\
-&= \phi \lambda_1e^{-\lambda_1 y} + (1-\phi) \lambda_2 e^{-\lambda_2 y}
+h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi) &= \phi f_1(y_i|\gamma_i, \lambda_1) + (1-\phi)f_2(y_i|\gamma_i, \lambda_2) \\
+&= \phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}
 \end{align*}
+where $\gamma_i$ is the length of track segment $i$.

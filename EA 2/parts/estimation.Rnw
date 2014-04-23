@@ -13,17 +13,17 @@ g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
 where $z_i \in \{0,1\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
 \begin{align*}
 f_i(y_i|z_i, \lambda_1,\lambda_2,\beta_2) &= f_1(y_i|z_i, \lambda_1)^{z_{i}}f_2(y_i|z_i, \lambda_2)^{(1-z_{i})} \\
-&= \left(\lambda_1e^{-\lambda_1 y_i}\right)^{z_{i}}\left(\lambda_2 e^{-\lambda_2 y_i}\right)^{(1-z_{i})}
+&= \left(\frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left(\frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
 \end{align*}
 Then $Y_i$ and $Z_i$ have joint mixed density function
 \begin{align*}
 p_i(y_i,z_i|\lambda_1,\lambda_2,\phi) &= f_i(y_i|z_i, \lambda_1, \lambda_2)g(z_i|\phi) \\
-&= \left(\phi \lambda_1 e^{-\lambda_1 y_i}\right)^{z_{i}}\left((1-\phi) \lambda_2 e^{-\lambda_2 y_i}\right)^{(1-z_{i})}
+&= \left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
 \end{align*}
 and the conditional mass function for the unobserved $Z_i$ is,
 \begin{align*}
 k_i(z_i|y_i,\lambda_1, \lambda_2,\phi)
-&= \frac{\left(\phi \lambda_1 e^{-\lambda_1 y_i}\right)^{z_{i}}\left((1-\phi) \lambda_2 e^{-\lambda_2 y_i}\right)^{(1-z_{i})}}{\phi \lambda_1 e^{-\lambda_1 y_i} + (1-\phi) \lambda_2 e^{-\lambda_2 y_i}}
+&= \frac{\left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}}{\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}}
 \end{align*}
 
 We can now form the full observed data model, unobserved marginal model, complete data model, and conditional unoberved model, by independence:

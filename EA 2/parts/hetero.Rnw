@@ -1,0 +1,111 @@
+An alternative to the homogeneous model would be to assume that the two different steel types have different rates of flaws. We form this model with the same observable random variables as for the homogeneous model, but replace the pmf with the following expression
+\begin{align*}
+h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi) &= \phi f_1(y_i|\gamma_i, \lambda_1) + (1-\phi)f_2(y_i|\gamma_i, \lambda_2) \\
+&= \phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}.
+\end{align*}
+Where $\lambda_1, \lambda_2 \in (0,\infty)$ and $0 < \phi < 1$, and $\gamma_i$ is again the length of track segment $i$. We will use the EM algorithm to approximate $\phi$ through formulation of the problem as a missing information problem. Define the unobserved random variables $\{Z_{i}\}$ where 
+\begin{align*}
+Z_{i} = \begin{cases}
+1 & \text{if } Y_i \text{ is from steel type A}\\
+0 & \text{if } Y_i \text{ is from steel type B}\\
+\end{cases}
+\end{align*}
+The probability mass function of $Z_{i}$ is then
+\begin{align*}
+g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
+\end{align*}
+where $z_i \in \{0,1\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
+\begin{align*}
+f_i(y_i|z_i, \lambda_1,\lambda_2,\beta_2) &= f_1(y_i|z_i, \lambda_1)^{z_{i}}f_2(y_i|z_i, \lambda_2)^{(1-z_{i})} \\
+&= \left(\frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left(\frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
+\end{align*}
+Then $Y_i$ and $Z_i$ have joint mixed density function
+\begin{align*}
+p_i(y_i,z_i|\lambda_1,\lambda_2,\phi) &= f_i(y_i|z_i, \lambda_1, \lambda_2)g(z_i|\phi) \\
+&= \left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
+\end{align*}
+and the conditional mass function for the unobserved $Z_i$ is,
+\begin{align*}
+k_i(z_i|y_i,\lambda_1, \lambda_2,\phi)
+&= \frac{\left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}}{\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}}
+\end{align*}
+
+We can now form the full observed data model, unobserved marginal model, complete data model, and conditional unoberved model, by independence:
+\begin{align*}
+f(\boldsymbol y | \boldsymbol z, \lambda_1, \lambda_2,\phi) &= \prod\limits_{i=1}^n f_i(y_i | z_i, \lambda_1, \lambda_2,\phi) \\
+g(\boldsymbol z | \phi) &= \prod\limits_{i=1}^n g(z_i |\phi) \\
+p(\boldsymbol y , \boldsymbol z | \lambda_1, \lambda_2,\phi) &= \prod\limits_{i=1}^n p_i(y_i, z_i| \lambda_1, \lambda_2,\phi) \\
+k(\boldsymbol z | \boldsymbol y, \lambda_1, \lambda_2,\phi) &= \prod\limits_{i=1}^n k_i(z_i | y_i, \lambda_1, \lambda_2,\phi) \\
+\end{align*}
+Thus, we can write the functons $L$, $Q$, and $H$ in our formulation of the EM algorthm as sums over $i$. Let $\boldsymbol \theta = (\lambda_1, \lambda_2)$, then
+\begin{align*}
+Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{p_i(y_i, z_i|\boldsymbol \theta, \phi)\}|\boldsymbol \theta_p, \phi_p] \\
+&= \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{f_i(y_i| z_i,\boldsymbol \theta)\}|\boldsymbol \theta_p, \phi_p] + \sum\limits_{i=1}^n \text{E}_{z|y}[\log\{g(z_i| \phi)\}|\boldsymbol \theta_p, \phi_p] 
+\end{align*}
+And substituting the expression for $f_i$ in this expression yields,
+\begin{align*}
+\text{E}_{z|y}[\log\{f_i(y_i| z_i,\boldsymbol \theta)\}|\boldsymbol \theta_p, \phi_p] & = \text{E}_{z|y}\left[z_i \log\{f_1(y_i|\boldsymbol \theta_1)\} + (1-z_i) \log\{f_2(y_i|\boldsymbol \theta_2)\} | \boldsymbol \theta_p \phi_p \right] \\
+&= \log\{f_1(y_i|\boldsymbol \theta_1)\} \text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p) + \log\{f_2(y_i|\boldsymbol \theta_2)\}(1- \text{E}_{z|y}(z_i  | \boldsymbol \theta_p \phi_p )) \\
+&= [y_i\log \gamma_i + y_i\log(\lambda_1) - \log y_i! - \gamma_i \lambda_1]\text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p) + \\
+& \qquad [y_i\log \gamma_i + y_i\log(\lambda_2) - \log y_i! - \gamma_i \lambda_2](1-\text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p))
+\end{align*}
+Similarly, substituting for $g_i$ yields,
+\begin{align*}
+\text{E}_{z|y}[\log\{g(z_i| \phi)\}|\boldsymbol \theta_p, \phi_p] & = \text{E}_{z|y}(z_i\log(\phi) + (1-z_i)\log(1-\phi)|\boldsymbol \theta_p, \phi_p)\\
+&= \log(\phi)\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) + \log(1-\phi)(1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p))
+\end{align*}
+Both of these expressions require only $\text{E}_{z|y}[z_i|\boldsymbol \theta_p, \phi_p]$. From the expression for $k_i$, this expectation can be calculated as
+\begin{align*}
+\text{E}_{z|y}[z_i|\boldsymbol \theta_p, \phi_p] &= \sum\limits_{z_i \in \Omega_z} \left[ \frac{\left(\phi_p \frac{(\gamma_i \lambda_{p1})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p1}}\right)^{z_{i}}\left((1-\phi_p) \frac{(\gamma_i \lambda_{p2})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p2}}\right)^{(1-z_{i})}}{\phi_p \frac{(\gamma_i \lambda_{p1})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p1}} + (1-\phi_p) \frac{(\gamma_i \lambda_{p2})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p2}}} z_i \right] \\
+&= \frac{\left(\phi_p \frac{(\gamma_i \lambda_{p1})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p1}}\right)}{\phi_p \frac{(\gamma_i \lambda_{p1})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p1}} + (1-\phi_p) \frac{(\gamma_i \lambda_{p2})^{y_i}}{y_i!}e^{-\gamma_i \lambda_{p2}}}
+\end{align*}
+Substitution back into the expression for $Q$ yields:
+\begin{align*}
+Q(\boldsymbol \theta, \phi|\boldsymbol \theta_p, \phi_p) &= \sum\limits_{i=1}^n\Bigg\{  [ \log(\phi) + y_i\log \gamma_i + y_i\log(\lambda_1) - \log y_i! - \gamma_i \lambda_1]\text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p) + \\
+& \qquad [\log(1-\phi)+ y_i\log \gamma_i + y_i\log(\lambda_2) - \log y_i! - \gamma_i \lambda_2](1-\text{E}_{z|y} (z_i|\boldsymbol \theta_p \phi_p))] \Bigg\}
+\end{align*}
+Computation of this expression is the E-step of one iteration in our EM algorithm. The M-step is the maximization of this expression of $Q$ in $\boldsymbol \theta$ and $\phi$. 
+\begin{align*}
+\frac{\partial Q}{\partial \phi} &= \sum\limits_{i=1}^n \left\{\frac{1}{\phi}\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) - \frac{1}{1-\phi}(1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p))\right\}
+\end{align*}
+so that $\hat{\phi}$ satisfies
+\begin{align*}
+\hat{\phi} = \frac{1}{n}\sum\limits_{i=1}^n \text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p).
+\end{align*}
+So, at a given iteration of the EM algorithm, the estimated values of $\phi$ are the average probabilities under the current values $\boldsymbol \theta_p$ that observations are from steel type A. We let
+\begin{align*}
+\hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p) = \text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)
+\end{align*}
+be the estimated probability that observations $y_i$ belongs to steel type A under the current estimates $\boldsymbol \theta_p, \phi_p$ and then
+\begin{align*}
+\hat{\phi} = \frac{1}{n} \sum\limits_{i=1}^n\hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p).
+\end{align*}
+For maximization of $Q$ in $\boldsymbol \theta$,
+\begin{align*}
+\frac{\partial Q}{\partial \lambda_1} &= \sum\limits_{i=1}^n \left\{\frac{y_i}{\lambda_1} - \gamma_i \right\}\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p) \\
+\frac{\partial Q}{\partial \lambda_2} &= \sum\limits_{i=1}^n \left\{\frac{y_i}{\lambda_2} - \gamma_i \right\}(1-\text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p))
+\end{align*}
+Thus, we have
+\begin{align*}
+\hat{\lambda}_1 &= \frac{\sum\limits_{i=1}^n y_i \hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p)}{\sum\limits_{i=1}^n \gamma_i \hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p)} \\
+\hat{\lambda}_2 &= \frac{\sum\limits_{i=1}^n y_i (1-\hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p))}{\sum\limits_{i=1}^n \gamma_i (1-\hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p))}
+\end{align*}
+The basic EM algorithm for this application then consists of the following steps:
+\begin{enumerate}
+\item Choose starting values $\lambda_1^{(0)}, \lambda_2^{(0)}, \phi^{(0)}$.
+\item At iteration $k + 1 = 1,2,\dots$
+\begin{enumerate}
+\item Compute probabilities that each observation belongs to steel type A
+$$ \hat{p}(1|y_i, \phi^{(k)}, \lambda_1^{(k)}, \lambda_2^{(k)}) = \frac{\left(\phi^{(k)} \frac{(\gamma_i \lambda_1^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_1^{(k)}}\right)}{\phi^{(k)} \frac{(\gamma_i \lambda_1^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_1^{(k)}} + (1-\phi^{(k)}) \frac{(\gamma_i \lambda_2^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_2^{(k)}}} $$
+\item Update the value of $\phi^{(k)}$ to 
+$$ \phi^{(k+1)} = \frac{1}{n}\sum_{i=1}^n \hat{p}(1|y_i, \phi^{(k)}, \lambda_1^{(k)})$$
+\item Update $\theta_1^{(k)}$ and $\theta_2^{(k)}$ to $\theta_1^{(k+1)}$ and $\theta_2^{(k+1)}$ as follows
+\begin{align*}
+\lambda_1^{(k+1)} &= \frac{\sum\limits_{i=1}^n y_i \hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)})}{\sum\limits_{i=1}^n \gamma_i \hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)})} \\
+\lambda_2^{(k+1)} &= \frac{\sum\limits_{i=1}^n y_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}{\sum\limits_{i=1}^n \gamma_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}
+\end{align*}
+\end{enumerate}
+\item Iterate step 2 until $|\theta_1^{(k+1)} - \theta_1^{(k)}| \le \delta, $|\theta_2^{(k+1)} - \theta_2^{(k)}| \le \delta$, and $|\phi^{(k+1)} - \phi^{(k)}| \le \delta$
+\end{enumerate}
+
+
