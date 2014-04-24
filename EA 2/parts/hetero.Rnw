@@ -148,7 +148,7 @@ ub<-ests[1:3] + qnorm(.975)*sqrt(diag(solve(h)))
 res <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(lb,4), ", ", round(ub,4),")", sep=""))
 names(res)[2] <- "95 \\% Wald Interval"
 rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
-print(xtable(res, caption="Maximum likelihood estimaes and 95\\% Wald intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
+print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
 inf_print <- paste(apply(solve(h),1,function(x){paste(paste(round(x,4), collapse="&"),"\\\\",sep="")}),collapse=" ")
 @
 With starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)} = 5$, the algorithm converged in \Sexpr{ests['n.iter']} iterations. The inverse observed information matrix used to compute the interval estimates of Table~\ref{tab:hetero} was, 
@@ -176,7 +176,7 @@ res <- res[order(res[,2], -res[,3]),]
 left <- res[1:ceiling(nrow(res)/2),]
 right <- res[(ceiling(nrow(res)/2)+1):nrow(res),]
 
-print(xtable(cbindPad(left, right), label='tab:hetero2', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic for the heterogeneous flaw rates model.", digits=c(0,0,0,4,4,4,0,0,4,4,4), align=c("c","c","c","c","c","c","|","c","c","c","c","c")),sanitize.text.function=function(x){x}, include.rownames=FALSE)
+print(xtable(cbindPad(left, right), label='tab:hetero2', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic for the heterogeneous flaw rates model.", digits=c(0,0,0,4,4,4,0,0,4,4,4), align=c("c","c","c","c","c","c","|","c","c","c","c","c")),sanitize.text.function=function(x){x},tabular.environment='longtable', floating=FALSE, include.rownames=FALSE)
 @
 }
 Also reported in Table~\ref{tab:hetero2} are estimated probabilities that each track segment was built with steel type A. While the overall estimate of this probability is $\hat{\phi} = \Sexpr{round(ests["phi"],4)}$, the segment values indicate those segments with fewer flaws were much more likely to be built from steel type A, than those with more flaws. This can also be seen in Figure~\ref{fig:plot_hetero}.

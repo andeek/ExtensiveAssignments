@@ -60,4 +60,13 @@ subway.dat <- read.table("data/subwaydat.txt", header=TRUE, colClasses="numeric"
 <<conclusion, child='parts/conclusion.Rnw', eval=TRUE>>=
 @
 
+\clearpage
+\begin{appendices}
+\section{Code Appendix: EM Algorithm}
+<<code_appendix_EM, echo=FALSE>>=
+read_chunk("code/em_algorithm.R", labels = 'EM-source')
+@
+<<EM-source, eval=FALSE>>=
+@
+\end{appendices}
 \end{document}
