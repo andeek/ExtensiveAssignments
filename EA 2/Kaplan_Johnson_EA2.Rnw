@@ -3,7 +3,6 @@
 \usepackage{graphicx, hyperref, float, multicol, pdflscape, enumerate, paralist, longtable}
 \usepackage{amssymb,amsmath,amsthm} 
 \usepackage{parskip}
-\usepackage[backend=bibtex, natbib=true]{biblatex}
 \usepackage[toc,page]{appendix}
 
 \usepackage{color}
@@ -25,6 +24,7 @@
 
 \maketitle
 <<options, echo=FALSE>>=
+library(knitr)
 opts_chunk$set(size='footnotesize', fig.align='center')
 @
 
@@ -35,6 +35,7 @@ library(reshape2)
 library(scales)
 library(xtable)
 source("code/helpers.R")
+source("code/em_algorithm.R")
 
 theme_set(theme_bw(base_family="serif"))
 @
