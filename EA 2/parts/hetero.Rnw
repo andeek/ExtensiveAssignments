@@ -1,9 +1,11 @@
-An alternative to the homogeneous model would be to assume that the two different steel types have different rates of flaws. We form this model with the same observable random variables as for the homogeneous model, but replace the pmf with the following expression
+An alternative to the homogeneous model would be to assume that the two different steel types have different rates of flaws. We consider a mixture poisson model with the same observable random variables as for the homogeneous model, and the following likelihood function 
 \begin{align*}
 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi) &= \phi f_1(y_i|\gamma_i, \lambda_1) + (1-\phi)f_2(y_i|\gamma_i, \lambda_2) \\
 &= \phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}.
 \end{align*}
-Where $\lambda_1, \lambda_2 \in (0,\infty)$ and $0 < \phi < 1$, and $\gamma_i$ is again the length of track segment $i$. We will use the EM algorithm to approximate $\phi$ through formulation of the problem as a missing information problem. Define the unobserved random variables $\{Z_{i}\}$ where 
+where $\lambda_1, \lambda_2 \in (0,\infty)$, $0 < \phi < 1$, and $\gamma_i$ is again the length of track segment $i$. $\lambda_1$ and $\lambda_2$ represent the number of flaws per km for tracks of type A and type B, respectively. $\phi$ represents the overall probability that a section of track is laid with steel type A. Estimation of this model could be achieved through direct maximization of the likelihood, but we will instead use the E-M algorithm and formulate the model as a missing information problem. The E-M algorithm allows for  estimation of $\lambda_1$, $\lambda_2$, and $\phi$, as well as simple estimation of the probability that each individual segment ($i$) is constructed of steel type A. 
+
+Define the unobserved random variables $\{Z_{i}\}$ such that 
 \begin{align*}
 Z_{i} = \begin{cases}
 1 & \text{if } Y_i \text{ is from steel type A}\\
@@ -19,17 +21,16 @@ where $z_i \in \{0,1\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density func
 f_i(y_i|z_i, \lambda_1,\lambda_2) &= f_1(y_i|z_i, \lambda_1)^{z_{i}}f_2(y_i|z_i, \lambda_2)^{(1-z_{i})} \\
 &= \left(\frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left(\frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
 \end{align*}
-Then $Y_i$ and $Z_i$ have joint mixed density function
+and $Y_i$ and $Z_i$ have joint mixed density function
 \begin{align*}
 p_i(y_i,z_i|\lambda_1,\lambda_2,\phi) &= f_i(y_i|z_i, \lambda_1, \lambda_2)g(z_i|\phi) \\
 &= \left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
 \end{align*}
-and the conditional mass function for the unobserved $Z_i$ is,
+The conditional mass function for the unobserved $Z_i$ is,
 \begin{align*}
 k_i(z_i|y_i,\lambda_1, \lambda_2,\phi)
 &= \frac{\left(\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left((1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}}{\phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}}
 \end{align*}
-
 We can now form the full observed data model, unobserved marginal model, complete data model, and conditional unoberved model, by independence:
 \begin{align*}
 f(\boldsymbol y | \boldsymbol z, \lambda_1, \lambda_2,\phi) &= \prod\limits_{i=1}^n f_i(y_i | z_i, \lambda_1, \lambda_2,\phi) \\
@@ -72,7 +73,7 @@ so that $\hat{\phi}$ satisfies
 \begin{align*}
 \hat{\phi} = \frac{1}{n}\sum\limits_{i=1}^n \text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p).
 \end{align*}
-So, at a given iteration of the EM algorithm, the estimated values of $\phi$ are the average probabilities under the current values $\boldsymbol \theta_p$ that observations are from steel type A. We let
+Therefore, at a given iteration of the EM algorithm, the estimated values of $\phi$ are the average probabilities, under the current values $\boldsymbol \theta_p$, that observations are from steel type A. We let
 \begin{align*}
 \hat{p}(1|y_i, \boldsymbol \theta_p, \phi_p) = \text{E}_{z|y}(z_i|\boldsymbol \theta_p, \phi_p)
 \end{align*}
@@ -99,15 +100,30 @@ The basic EM algorithm for this application then consists of the following steps
 $$ \hat{p}(1|y_i, \phi^{(k)}, \lambda_1^{(k)}, \lambda_2^{(k)}) = \frac{\left(\phi^{(k)} \frac{(\gamma_i \lambda_1^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_1^{(k)}}\right)}{\phi^{(k)} \frac{(\gamma_i \lambda_1^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_1^{(k)}} + (1-\phi^{(k)}) \frac{(\gamma_i \lambda_2^{(k)})^{y_i}}{y_i!}e^{-\gamma_i \lambda_2^{(k)}}} $$
 \item Update the value of $\phi^{(k)}$ to 
 $$ \phi^{(k+1)} = \frac{1}{n}\sum_{i=1}^n \hat{p}(1|y_i, \phi^{(k)}, \lambda_1^{(k)})$$
-\item Update $\theta_1^{(k)}$ and $\theta_2^{(k)}$ to $\theta_1^{(k+1)}$ and $\theta_2^{(k+1)}$ as follows
+\item Update $\lambda_1^{(k)}$ and $\lambda_2^{(k)}$ to $\lambda_1^{(k+1)}$ and $\lambda_2^{(k+1)}$ as follows
 \begin{align*}
 \lambda_1^{(k+1)} &= \frac{\sum\limits_{i=1}^n y_i \hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)})}{\sum\limits_{i=1}^n \gamma_i \hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)})} \\
 \lambda_2^{(k+1)} &= \frac{\sum\limits_{i=1}^n y_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}{\sum\limits_{i=1}^n \gamma_i (1-\hat{p}(1|y_i, y_i, \phi^{(k)}, \lambda_1^{(k)}))}
 \end{align*}
 \end{enumerate}
-\item Iterate step 2 until $|\theta_1^{(k+1)} - \theta_1^{(k)}| \le \delta$, $|\theta_2^{(k+1)} - \theta_2^{(k)}| \le \delta$, and $|\phi^{(k+1)} - \phi^{(k)}| \le \delta$.
+\item Iterate step 2 until $|\lambda_1^{(k+1)} - \lambda_1^{(k)}| \le \delta$, $|\lambda_2^{(k+1)} - \lambda_2^{(k)}| \le \delta$, and $|\phi^{(k+1)} - \phi^{(k)}| \le \delta$.
 \end{enumerate}
-To compute standard errors in this example we will first derive the observed information matrix corresponding to the marginal model $h(y_i|\gamma_1,\lambda_1,\lambda_2,\phi)$. Then from expression of the log likelihood as $l(\lambda_1,\lambda_2,\phi) = \sum l_i(\lambda_1,\lambda_2,\phi) \sum \log\{h(y_i|\gamma_1,\boldsymbol \theta)\}$ for $\boldsymbol \theta=(\lambda_1,\lambda_2,\phi)$,
+
+<<est_hetero, echo=FALSE, results='hide'>>=
+ests<-em_algorithm(.5, 0.01, 5, y=subway.dat$flaws, n=subway.dat$length)
+
+subway.dat$probs <- phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
+
+h<-hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
+lb<-ests[1:3] - qnorm(.975)*sqrt(diag(solve(h)))
+ub<-ests[1:3] + qnorm(.975)*sqrt(diag(solve(h)))
+inf_print <- paste(apply(solve(h),1,function(x){paste(paste(round(x,4), collapse="&"),"\\\\",sep="")}),collapse=" ")
+@
+
+A plethora of starting values for the algorithm were explored and all resulted in the same maximum likelihood estimates of $\lambda_1$, $\lambda_2$, and $\phi$, shown in Table ~\ref{tab:hetero} with a convergence criterion of $\delta = 10^{-8}$. The algorithm converged very quickly. For example, with starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)} = 5$, the algorithm converged in \Sexpr{ests['n.iter']} iterations. To assess variation in these estimates, we will consider both Wald theory and parametric bootstrap confidence intervals.
+
+\subsection{95\% Wald Theory Intervals}
+To compute standard errors for the Wald intervals, we will first derive the observed information matrix corresponding to the marginal model $h(y_i|\gamma_1,\lambda_1,\lambda_2,\phi)$. Then from expression of the log likelihood as $l(\lambda_1,\lambda_2,\phi) = \sum l_i(\lambda_1,\lambda_2,\phi) \sum \log\{h(y_i|\gamma_1,\boldsymbol \theta)\}$ for $\boldsymbol \theta=(\lambda_1,\lambda_2,\phi)$,
 \begin{align*}
 \frac{\partial l(\boldsymbol \theta)}{\partial \theta_j} &= \sum\limits_{i=1}^n \frac{\partial l_i(\boldsymbol \theta)}{\theta_j}\\
 \frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \sum\limits_{i=1}^n \frac{\partial^2 l_i(\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}\\ \\
@@ -131,38 +147,20 @@ And finally, for $\lambda_j; j=1,2$
 \frac{\partial f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)\\
  \frac{\partial^2 f_j(y_i|\gamma_i,\lambda_j)}{\partial \lambda_j^2} &= f_j(y_i|\gamma_i, \lambda_j)\left(\frac{y_i}{\lambda_j} - \gamma_i\right)^2 - f_j(y_i|\gamma_i,\lambda_j)\left(\frac{y_i}{\lambda_j^2}\right)
 \end{align*}
-The observed information matrix can thus be computed by calculation/plugging in of these quantities using the estimates from the EM algorithm for $\lambda_1,\lambda_2,\phi$.
+The observed information matrix can thus be computed by plugging in the estimates of $\lambda_1,\lambda_2,\phi$ from the EM algorithm to these quantities.
 
-Applying these procedures yields the following estimates in Table~\ref{tab:hetero} using the convergence criterion of $\delta = 10^{-8}$.
-<<est_hetero, echo=FALSE, results='hide'>>=
-ests<-em_algorithm(.5, 0.01, 5, y=subway.dat$flaws, n=subway.dat$length)
-
-subway.dat$probs <- phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
-
-h<-hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
-lb<-ests[1:3] - qnorm(.975)*sqrt(diag(solve(h)))
-ub<-ests[1:3] + qnorm(.975)*sqrt(diag(solve(h)))
-inf_print <- paste(apply(solve(h),1,function(x){paste(paste(round(x,4), collapse="&"),"\\\\",sep="")}),collapse=" ")
-@
-
-
-With starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)} = 5$, the algorithm converged in \Sexpr{ests['n.iter']} iterations. The inverse observed information matrix used to compute Wald interval estimates of Table~\ref{tab:hetero} was, 
+Then, the inverse observed information matrix used to compute Wald interval estimates, shown in Table~\ref{tab:hetero}, is
 \begin{align*}
 \mathcal{I}^{-1} = 
 \left(\begin{matrix} 
 \Sexpr{inf_print}
 \end{matrix}\right)
 \end{align*}
-This matrix was computed directly from the marginal log likelihood as described previously.
 
-<<tab_hetero, echo=FALSE, results='asis'>>=
-res <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(lb,4), ", ", round(ub,4),")", sep=""))
-names(res)[2] <- "95 \\% Wald Interval"
-rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
-print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
-@
 
-We also considered constructing parametric bootstrap intervals for $\lambda_1$, $\lambda_2$, and $\phi$. The 95\% bootstrap intervals were constructed using the following methodology.
+
+\subsection{Parametric Bootstrap Intervals}
+95\% bootstrap intervals were constructed for $\lambda_1$, $\lambda_2$ and $\phi$ using the following methodology.
 
 For $m= 1, \dots, M$,
 \begin{enumerate}
@@ -175,7 +173,7 @@ For $m= 1, \dots, M$,
 \item Estimate $\hat{\theta}^{(m)} = (\hat{\lambda}^{(m)}_1$, $\hat{\lambda}^{(m)}_2$, $\hat{\phi}^{(m)}$) using the E-M algorithm with $\mathbf{y}^{(m)}$
 \end{enumerate}
 
-Then 95\% interval estimates for elements of $\theta$ are $\left(2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.975) \rbrack}, 2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.025) \rbrack}\right)$.
+Then 95\% interval estimates for elements of $\theta$ are $\left(2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.975) \rbrack}, 2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.025) \rbrack}\right)$. These intervals are shown in Table~\ref{tab:hetero}.
 
 <<boot_hetero, echo=FALSE, results='asis'>>=
 n<-subway.dat$length
@@ -196,14 +194,22 @@ ests.boot<-rbind(ests[1:3], ests.boot)
 boot_intervals<-t(apply(ests.boot, 2, function(u) 2*u[1] - sort(u[-1])[c(975, 25)]))
 @
 
-<<tab_boot, echo=FALSE, results='asis'>>=
-res.boot <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(boot_intervals[,1],4), ", ", round(boot_intervals[,2],4),")", sep=""))
-names(res.boot)[2] <- "95 \\% Bootstrap Interval"
-rownames(res.boot) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
-print(xtable(res.boot, caption="Original estimates from the EM algorithm and 95\\% bootstrap intervals for parameters of the two component poisson distributions.", label="tab:boot"), sanitize.text.function=function(x){x})
+<<tab_hetero, echo=FALSE, results='asis'>>=
+res <- data.frame(Estimate=ests[1:3], Interval1=paste("(", round(lb,4), ", ", round(ub,4),")", sep=""), Interval2=paste("(", round(boot_intervals[,1],4), ", ", round(boot_intervals[,2],4),")", sep=""))
+names(res)[2] <- "95 \\% Wald Interval"
+names(res)[3] <- "95 \\% Bootstrap Interval"
+rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
+print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald and Bootstrap intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
 @
 
-\mj{Combine boot and wald tables}
+% <<tab_boot, echo=FALSE, results='asis'>>=
+% res.boot <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(boot_intervals[,1],4), ", ", round(boot_intervals[,2],4),")", sep=""))
+% names(res.boot)[2] <- "95 \\% Bootstrap Interval"
+% rownames(res.boot) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
+% print(xtable(res.boot, caption="Original estimates from the EM algorithm and 95\\% bootstrap intervals for parameters of the two component poisson distributions.", label="tab:boot"), sanitize.text.function=function(x){x})
+% @
+
+\subsection{Model Assessment}
 
 <<chi_hetero, echo=FALSE>>=
 phi.est<-ests[1]
@@ -213,8 +219,6 @@ subway.dat$exp.counts<-with(subway.dat, probs*l1*subway.dat$length + (1-probs)*l
 subway.dat$chi_sq <- with(subway.dat, (flaws-exp.counts)^2/exp.counts)
 chi.test <- sum(subway.dat$chi_sq)
 @
-
-
 
 \mj{Discuss difference between $\lambda_1$ and $\lambda_2$}
 

@@ -1,8 +1,8 @@
-We define random variables $\{Y_i: i = 1, \dots, n\}$ to be connected with the number of flaws on track section $i$. In our case, $n = $\Sexpr{length(unique(subway.dat$segment))}. As an initial model, we consider a constant rate of flaws $\lambda$ for all track sections, $i$. $Y_i$ are assumed to be independent with poisson probability mass functions for $\lambda > 0$,
+We define random variables $\{Y_i: i = 1, \dots, n\}$ to be connected with the number of flaws on track section $i$ (in this case, $n = \Sexpr{length(unique(subway.dat$segment))}$). As an initial model, we consider a constant rate of flaws $\lambda$ for all track sections, $i$. $Y_i$ are assumed to be independent with poisson probability mass functions for $\lambda > 0$,
 \begin{align*}
 f(y_i|\gamma_i, \lambda) = \frac{(\gamma_i \lambda)^{y_i}}{y_i!} e^{-\gamma_i \lambda}; \qquad y_i = 0,1,2,\dots
 \end{align*}
-with $\gamma_i$ being the length of track section $i$. The log-likelihood function for this model is,
+where $\gamma_i$ represents the length of track section $i$. The log-likelihood function for this model is then,
 \begin{align*}
 l(\lambda) = \sum\limits_{i=1}^n \{ y_i \log \gamma_i + y_i \log \lambda - \log y_i! -\gamma_i \lambda\}
 \end{align*}
@@ -21,7 +21,7 @@ subway.dat$exp.counts <- l_hat*subway.dat$length
 subway.dat$chi_sq <- with(subway.dat, (flaws - exp.counts)^2/exp.counts)
 chi.test<-sum(subway.dat$chi_sq)
 @
-To assess the model fit, we use the Pearson Chi-square test which gives a test statistics value of \Sexpr{round(chi.test,4)}, which with \Sexpr{nrow(subway.dat) - 1} degrees of freedom yields a $p$-value of nearly \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. The Chi-square test indicates that the constant poisson model cannot adequately represent number of flaws in a subway tracks. We can investigate whether there are particular sections of track that fit poorly by looking at the individual contributions to the Chi-square test statistic. See Table~\ref{tab:homo} for details.
+To assess the model fit, we use the Pearson Chi-square test which gives a test statistics value of \Sexpr{round(chi.test,4)}, which with \Sexpr{nrow(subway.dat) - 1} degrees of freedom yields a $p$-value of nearly \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This test indicates that the constant poisson model cannot adequately represent the number of flaws in a subway tracks and a more flexible model is required. We can investigate whether there are particular sections of track that fit poorly by looking at the individual contributions to the Chi-square test statistic. See Table~\ref{tab:homo} for details.
 {\footnotesize
 <<tab_homo, echo=FALSE, results='asis', warning=FALSE>>=
 res <- subway.dat[,-2]
@@ -35,6 +35,6 @@ print(xtable(cbindPad(left, right), label='tab:homo', caption="Observed and expe
 @
 }
 
-The highest contributions come from segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{perc.chi}\% of the total $\chi^2$ test statistic value. 
+The highest contributions come from segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{perc.chi}\% of the total $\chi^2$ test statistic value. We then hypothesize that these two groups may correspond to flaws from type A and type B steel tracks, respectively.  
 
 
