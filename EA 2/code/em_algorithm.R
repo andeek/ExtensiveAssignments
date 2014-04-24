@@ -44,11 +44,11 @@ em_algorithm<-function(phi, l1, l2, y, n, maxit=1000, conv.crit=10e-8){
     l1_2<-sum(y*phat)/sum(n*phat)
     l2_2<-sum(y*(1-phat))/sum(n*(1-phat))
     if(abs(phi2-phi) < conv.crit & abs(l1_2-l1) < conv.crit & abs(l2_2-l2) < conv.crit){
-      cat("Convergence reached\n")
+      #cat("Convergence reached\n")
       break 
     } 
     if(j == maxit){
-      cat("Maximum iterations reached\n")
+      #cat("Maximum iterations reached\n")
       break
     }else{
       j<-j+1

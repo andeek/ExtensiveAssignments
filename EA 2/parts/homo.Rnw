@@ -29,10 +29,12 @@ names(res) <- c("Segment", "Observed", "Expected", "$\\chi^2_i$")
 res <- res[order(res[,2], -res[,3]),]
 left <- res[1:ceiling(nrow(res)/2),]
 right <- res[(ceiling(nrow(res)/2)+1):nrow(res),]
+perc.chi<-round(sum(subway.dat[subway.dat$flaws %in% c(0,1,15,18),"chi_sq"])/sum(subway.dat$chi_sq)*100,2)
 
 print(xtable(cbindPad(left, right), label='tab:homo', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic.", digits=c(0,0,0,4,4,0,0,4,4), align=c("c","c","c","c","c","|","c","c","c","c")),sanitize.text.function=function(x){x}, tabular.environment='longtable', floating=FALSE, include.rownames=FALSE)
 @
 }
-The highest contributions come from segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{round(sum(subway.dat[subway.dat$flaws %in% c(0,1,15,18),"chi_sq_homo"])/sum(subway.dat$chi_sq_homo)*100,2)}\% of the total $\chi^2$ test statistic value. 
+
+The highest contributions come from segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{perc.chi}\% of the total $\chi^2$ test statistic value. 
 
 

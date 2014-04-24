@@ -142,16 +142,11 @@ subway.dat$probs <- phat_fun(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=su
 h<-hessian(ests[1], ests[2], ests[3], y=subway.dat$flaws, n=subway.dat$length)
 lb<-ests[1:3] - qnorm(.975)*sqrt(diag(solve(h)))
 ub<-ests[1:3] + qnorm(.975)*sqrt(diag(solve(h)))
-@
-
-<<tab_hetero, echo=FALSE, results='asis'>>=
-res <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(lb,4), ", ", round(ub,4),")", sep=""))
-names(res)[2] <- "95 \\% Wald Interval"
-rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
-print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
 inf_print <- paste(apply(solve(h),1,function(x){paste(paste(round(x,4), collapse="&"),"\\\\",sep="")}),collapse=" ")
 @
-With starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)} = 5$, the algorithm converged in \Sexpr{ests['n.iter']} iterations. The inverse observed information matrix used to compute the interval estimates of Table~\ref{tab:hetero} was, 
+
+
+With starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)} = 5$, the algorithm converged in \Sexpr{ests['n.iter']} iterations. The inverse observed information matrix used to compute Wald interval estimates of Table~\ref{tab:hetero} was, 
 \begin{align*}
 \mathcal{I}^{-1} = 
 \left(\begin{matrix} 
@@ -159,6 +154,57 @@ With starting values of $\phi^{(0)} = .5, \lambda_1^{(0)} = 0.01, \lambda_2^{(0)
 \end{matrix}\right)
 \end{align*}
 This matrix was computed directly from the marginal log likelihood as described previously.
+
+<<tab_hetero, echo=FALSE, results='asis'>>=
+res <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(lb,4), ", ", round(ub,4),")", sep=""))
+names(res)[2] <- "95 \\% Wald Interval"
+rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
+print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
+@
+
+We also considered constructing parametric bootstrap intervals for $\lambda_1$, $\lambda_2$, and $\phi$. The 95\% bootstrap intervals were constructed using the following methodology.
+
+For $m= 1, \dots, M$,
+\begin{enumerate}
+\item Simulate $\mathbf{y}^{(m)} = (y^{(m)}_1, \dots, y^{(m)}_n)$ from $h(y|\hat{\lambda}_1, \hat{\lambda}_2, \hat{\phi})$.
+  \begin{enumerate}
+  \item Simulate $\mathbf{u}^{(m)} = (u^{(m)}_1, \dots, u^{(m)}_n)$ from a Unif$(0,1)$.
+  \item If $u^{(m)}_i < \hat{\phi}$, simulate $y^{(m)}_i$ from Pois$(\hat{\lambda}_1)$.
+  \item If $u^{(m)}_i \geq \hat{\phi}$, simulate $y^{(m)}_i$ from Pois$(\hat{\lambda}_2)$.
+  \end{enumerate}
+\item Estimate $\hat{\theta}^{(m)} = (\hat{\lambda}^{(m)}_1$, $\hat{\lambda}^{(m)}_2$, $\hat{\phi}^{(m)}$) using the E-M algorithm with $\mathbf{y}^{(m)}$
+\end{enumerate}
+
+Then 95\% interval estimates for elements of $\theta$ are $\left(2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.975) \rbrack}, 2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.025) \rbrack}\right)$.
+
+<<boot_hetero, echo=FALSE, results='asis'>>=
+n<-subway.dat$length
+ests.boot<-NULL
+for(j in 1:1000){
+  phis<-runif(75)
+  y<-1:75
+  for(i in 1:75){
+    if(phis[i] < ests[1]){
+      y[i]<-rpois(1, ests[2]*n[i])
+    }else{
+      y[i]<-rpois(1, ests[3]*n[i])
+    }
+  }
+  ests.boot<-rbind(ests.boot, c(em_algorithm(.5, .01, 5, y=y, n=subway.dat$length)[1:3]))
+}
+ests.boot<-rbind(ests[1:3], ests.boot)
+boot_intervals<-t(apply(ests.boot, 2, function(u) 2*u[1] - sort(u[-1])[c(975, 25)]))
+@
+
+<<tab_boot, echo=FALSE, results='asis'>>=
+res.boot <- data.frame(Estimate=ests[1:3], Interval=paste("(", round(boot_intervals[,1],4), ", ", round(boot_intervals[,2],4),")", sep=""))
+names(res.boot)[2] <- "95 \\% Bootstrap Interval"
+rownames(res.boot) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
+print(xtable(res.boot, caption="Original estimates from the EM algorithm and 95\\% bootstrap intervals for parameters of the two component poisson distributions.", label="tab:boot"), sanitize.text.function=function(x){x})
+@
+
+\mj{Combine boot and wald tables}
+
 <<chi_hetero, echo=FALSE>>=
 phi.est<-ests[1]
 l1<-ests[2]
@@ -167,7 +213,13 @@ subway.dat$exp.counts<-with(subway.dat, probs*l1*subway.dat$length + (1-probs)*l
 subway.dat$chi_sq <- with(subway.dat, (flaws-exp.counts)^2/exp.counts)
 chi.test <- sum(subway.dat$chi_sq)
 @
-Using the estimates from Table~\ref{tab:hetero}, expected flaws were computed for each segment of track. These are reporten in Table~\ref{tab:hetero2}, along with individual contributions to the overall Chi-square test statistic of \Sexpr{chi.test} with, which with \Sexpr{nrow(subway.dat) - 1} degress of freedom, has an associated $p$-value of \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This $p$-value indicates a substantial improvement in the heterogeneous model for flaws in subway track segments. 
+
+
+
+\mj{Discuss difference between $\lambda_1$ and $\lambda_2$}
+
+Using the parameter estimates from Table~\ref{tab:hetero} and the estimated probabilities a segment was built with steel type A, expected flaws were computed for each segment of track. These expected counts are reported in Table~\ref{tab:hetero2}, along with individual contributions to the overall Chi-square test statistic of \Sexpr{chi.test} with, which with \Sexpr{nrow(subway.dat) - 1} degress of freedom, has an associated $p$-value of \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This $p$-value indicates that the heterogeneous model results in a substantial improvement over the homogeneous model, discussed previously, in estimation of the number of flaws in subway track segments.
+
 {\footnotesize
 <<tab_hetero2, echo=FALSE, results='asis', warning=FALSE>>=
 res <- subway.dat[,-2]
@@ -180,6 +232,7 @@ print(xtable(cbindPad(left, right), label='tab:hetero2', caption="Observed and e
 @
 }
 Also reported in Table~\ref{tab:hetero2} are estimated probabilities that each track segment was built with steel type A. While the overall estimate of this probability is $\hat{\phi} = \Sexpr{round(ests["phi"],4)}$, the segment values indicate those segments with fewer flaws were much more likely to be built from steel type A, than those with more flaws. This can also be seen in Figure~\ref{fig:plot_hetero}.
+
 <<plot_hetero, echo=FALSE, fig.height=4, fig.width=6, out.width='.6\\textwidth', fig.cap='Probabilities of each track segment being built from steel type A compared to the number of flaws in each segment.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
 qplot(x=flaws, y=probs, data=subway.dat)
 @
