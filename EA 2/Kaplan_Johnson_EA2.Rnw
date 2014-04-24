@@ -34,13 +34,13 @@ library(ggplot2)
 library(reshape2)
 library(scales)
 library(xtable)
+source("code/helpers.R")
 
 theme_set(theme_bw(base_family="serif"))
 @
 
 <<data, echo=FALSE>>=
 subway.dat <- read.table("data/subwaydat.txt", header=TRUE, colClasses="numeric")
-subway.dat$rate <- with(subway.dat, flaws/length)
 @
 
 \section{Introduction}

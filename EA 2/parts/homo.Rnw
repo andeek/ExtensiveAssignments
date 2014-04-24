@@ -15,7 +15,24 @@ From the log likelihood, the maximum likelihood estimate and the expected (Fishe
 l_hat <- with(subway.dat, sum(flaws)/sum(length))
 l_interval <- c(l_hat - qnorm(.975)*sqrt(1/(1/l_hat*sum(subway.dat$length))), l_hat + qnorm(.975)*sqrt(1/(1/l_hat*sum(subway.dat$length))))
 @
-Using the data, the maximum likelihood estimate of $\lambda$ is $\hat{\lambda} = \Sexpr{round(l_hat,4)}$ with an associated Wald theory $95\%$ interval of (\Sexpr{round(l_interval[1],4)},\Sexpr{round(l_interval[2],4)}). As a quick check we can compute a Pearson Chi-square test.
+Using the data, the maximum likelihood estimate of $\lambda$ is $\hat{\lambda} = \Sexpr{round(l_hat,4)}$ with an associated Wald theory $95\%$ interval of (\Sexpr{round(l_interval[1],4)},\Sexpr{round(l_interval[2],4)}). 
+<<chi_homo, echo=FALSE>>=
+subway.dat$exp.counts <- l_hat*subway.dat$length
+subway.dat$chi_sq_homo <- with(subway.dat, (flaws - exp.counts)^2/exp.counts)
+chi.test_homo<-sum(subway.dat$chi_sq_homo)
+@
+As a quick check we can compute a Pearson Chi-square test which gives a test statistics value of \Sexpr{round(chi.test_homo,4)}, which with \Sexpr{nrow(subway.dat) - 1} degrees of freedon yields a $p$-value of nearly \Sexpr{1-pchisq(chi.test_homo, nrow(subway.dat)-1)}. We can investigate where there are particular sections of track that fit poorly by looking at the individual contributions to the Chi-square test statistic. See Table~\ref{tab:homo} for details.
+{\footnotesize
+<<tab_homo, echo=FALSE, results='asis', warning=FALSE>>=
+res <- subway.dat[,-2]
+names(res) <- c("Segment", "Observed", "Expected", "$\\chi^2_i$")
+res <- res[order(res[,2], -res[,3]),]
+left <- res[1:ceiling(nrow(res)/2),]
+right <- res[(ceiling(nrow(res)/2)+1):nrow(res),]
 
-CHI-SQUARE TEST
+print(xtable(cbindPad(left, right), label='tab:homo', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic.", digits=c(0,0,0,4,4,0,0,4,4), align=c("c","c","c","c","c","|","c","c","c","c")),sanitize.text.function=function(x){x}, tabular.environment='longtable', floating=FALSE, include.rownames=FALSE)
+@
+}
+We can see the highest contributions come from those segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{round(sum(subway.dat[subway.dat$flaws %in% c(0,1,15,18),"chi_sq_homo"])/sum(subway.dat$chi_sq_homo)*100,2)}\% of the total $\chi^2$ test statistic value.
+
 
