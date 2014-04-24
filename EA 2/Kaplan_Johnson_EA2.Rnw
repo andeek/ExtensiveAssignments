@@ -13,7 +13,7 @@
 \newtheorem{res}{Result}
 
 \setlength{\parindent}{0cm}
-\setlength{\parskip}{.05cm}
+%\setlength{\parskip}{.05cm}
 \renewcommand{\baselinestretch}{1.5}
 
 \title{Extensive Assignment 2: Flaws in a Subway \\ {STAT 601}}

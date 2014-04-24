@@ -16,7 +16,7 @@ g(z_i|\phi) = \phi^{z_{i}}(1-\phi)^{1-z_{i}}
 \end{align*}
 where $z_i \in \{0,1\}$. Then conditional on $Z_i = z_i$, $Y_i$ has density function
 \begin{align*}
-f_i(y_i|z_i, \lambda_1,\lambda_2,\beta_2) &= f_1(y_i|z_i, \lambda_1)^{z_{i}}f_2(y_i|z_i, \lambda_2)^{(1-z_{i})} \\
+f_i(y_i|z_i, \lambda_1,\lambda_2) &= f_1(y_i|z_i, \lambda_1)^{z_{i}}f_2(y_i|z_i, \lambda_2)^{(1-z_{i})} \\
 &= \left(\frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1}\right)^{z_{i}}\left(\frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}\right)^{(1-z_{i})}
 \end{align*}
 Then $Y_i$ and $Z_i$ have joint mixed density function
