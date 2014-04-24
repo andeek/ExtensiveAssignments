@@ -127,7 +127,9 @@ To compute standard errors for the Wald intervals, we will first derive the obse
 
 \begin{align*}
 \frac{\partial l(\boldsymbol \theta)}{\partial \theta_j} &= \sum\limits_{i=1}^n \frac{\partial l_i(\boldsymbol \theta)}{\theta_j}\\
-\frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \sum\limits_{i=1}^n \frac{\partial^2 l_i(\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}\\ \\
+\frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \sum\limits_{i=1}^n \frac{\partial^2 l_i(\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}\\ 
+\end{align*}
+\begin{align*}
 \frac{\partial l_i(\boldsymbol \theta)}{\theta_j} &= \frac{\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_j}}{h(y_i|\boldsymbol \theta)} \\
 \frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \frac{\frac{\partial^2 h(y_i|\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}}{h(y_i|\boldsymbol \theta)} - \frac{\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_j}\frac{\partial h(y_i|\boldsymbol \theta)}{\partial \theta_k}}{\{h(y_i|\boldsymbol \theta)\}^2}
 \end{align*}
@@ -158,7 +160,7 @@ Then, the inverse observed information matrix used to compute Wald interval esti
 \end{matrix}\right)
 \end{align*}
 
-
+\newpage
 
 \subsection{Parametric Bootstrap Intervals}
 95\% bootstrap intervals were constructed for $\lambda_1$, $\lambda_2$ and $\phi$ using the following methodology.
@@ -200,7 +202,7 @@ res <- data.frame(Estimate=ests[1:3], Interval1=paste("(", round(lb,4), ", ", ro
 names(res)[2] <- "95 \\% Wald Interval"
 names(res)[3] <- "95 \\% Bootstrap Interval"
 rownames(res) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
-print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald and Bootstrap intervals for parameters of the two component poisson distributions.", label="tab:hetero"), sanitize.text.function=function(x){x})
+print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald and Bootstrap intervals for parameters of the two component poisson distributions.", label="tab:hetero", align=c("r", "r", "r", "r")), sanitize.text.function=function(x){x})
 @
 
 % <<tab_boot, echo=FALSE, results='asis'>>=
@@ -209,6 +211,8 @@ print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald and Bootst
 % rownames(res.boot) <- c("$\\phi$","$\\lambda_1$","$\\lambda_2$")
 % print(xtable(res.boot, caption="Original estimates from the EM algorithm and 95\\% bootstrap intervals for parameters of the two component poisson distributions.", label="tab:boot"), sanitize.text.function=function(x){x})
 % @
+
+Intervals using Wald theory and parametric bootstrap for the parameters are consistent with each other. The estimates and intervals for $\lambda_1$ and $\lambda_2$, shown in Table~\ref{tab:hetero}, indicate that the number of flaws per km for type A is significantly lower than the number of flaws per km for type B. 
 
 \subsection{Model Assessment}
 
@@ -221,28 +225,28 @@ subway.dat$chi_sq2 <- with(subway.dat, (flaws-exp.counts2)^2/exp.counts2)
 chi.test2 <- sum(subway.dat$chi_sq2)
 @
 
-\mj{Discuss difference between $\lambda_1$ and $\lambda_2$}
-
 Using the parameter estimates from Table~\ref{tab:hetero} and the estimated probabilities a segment was built with steel type A, expected flaws were computed for each segment of track. These expected counts are reported in Table~\ref{tab:hetero2}, along with individual contributions to the overall Chi-square test statistic of \Sexpr{chi.test2} with, which with \Sexpr{nrow(subway.dat) - 1} degress of freedom, has an associated $p$-value of \Sexpr{1-pchisq(chi.test2, nrow(subway.dat)-1)}. This $p$-value indicates that the heterogeneous model results in a substantial improvement over the homogeneous model, discussed previously, in estimation of the number of flaws in subway track segments.
+
+\newpage
 
 {\footnotesize
 <<tab_hetero2, echo=FALSE, results='asis', warning=FALSE>>=
-res <- subway.dat[,c(1,3,7,8,6)]
-names(res) <- c("Segment", "Observed", "Expected", "$\\chi^2_i$", "Pr(A)")
-res <- res[order(res[,2], -res[,3]),]
+res <- subway.dat[,c(1,2,3,7,8,6)]
+names(res) <- c("Segment","Length", "Observed", "Expected", "$\\chi^2_i$", "Pr(A)")
+res <- res[order(res[,3], -res[,4]),]
 left <- res[1:ceiling(nrow(res)/2),]
 right <- res[(ceiling(nrow(res)/2)+1):nrow(res),]
 
-print(xtable(cbindPad(left, right), label='tab:hetero2', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic for the heterogeneous flaw rates model.", digits=c(0,0,0,4,4,4,0,0,4,4,4), align=c("c","c","c","c","c","c","|","c","c","c","c","c")),sanitize.text.function=function(x){x},tabular.environment='longtable', floating=FALSE, include.rownames=FALSE)
+print(xtable(cbindPad(left, right), label='tab:hetero2', caption="Observed and expected flaws in subway track section, along with contributions to the Chi-square test statistic for the heterogeneous flaw rates model.", digits=c(0,0,0,0,4,4,4,0,0,0,4,4,4), align=c("c","c","c","c","c","c","c","|","c","c","c","c","c","c")),sanitize.text.function=function(x){x},tabular.environment='longtable', floating=FALSE, include.rownames=FALSE)
 @
 }
-Also reported in Table~\ref{tab:hetero2} are estimated probabilities that each track segment was built with steel type A. While the overall estimate of this probability is $\hat{\phi} = \Sexpr{round(ests["phi"],4)}$, the segment values indicate those segments with fewer flaws were much more likely to be built from steel type A, than those with more flaws. This can also be seen in Figure~\ref{fig:plot_hetero}.
+Also reported in Table~\ref{tab:hetero2} are estimated probabilities that each track segment was built with steel type A. While the overall estimate of this probability is $\hat{\phi} = \Sexpr{round(ests["phi"],4)}$, the segment values indicate those segments with fewer flaws were much more likely to be built from steel type A, than those with more flaws. This can also be seen in Figure~\ref{fig:plot_hetero}, and is consistent with the assumption that steel type A is less susceptible to flaws than steel type B.
 
-<<plot_hetero, echo=FALSE, fig.height=4, fig.width=6, out.width='.6\\textwidth', fig.cap='Probabilities of each track segment being built from steel type A compared to the number of flaws in each segment.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
-qplot(x=flaws, y=probs, data=subway.dat)
+<<plot_hetero, echo=FALSE, fig.height=4, fig.width=6, out.width='.55\\textwidth', fig.cap='Probabilities of each track segment being built from steel type A compared to the number of flaws in each segment.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
+qplot(x=flaws, y=probs, data=subway.dat, xlab="Number of Flaws", ylab="Probability of Steel Type A")
 @
 
-<<plot_hetero2, echo=FALSE, fig.height=4, fig.width=6, out.width='\\textwidth', fig.cap='Comparison of expected versus observed flaw counts for each track segment from both the homoegeneous and the hetergeneous models.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
+<<plot_hetero2, echo=FALSE, fig.height=4, fig.width=6, out.width='.8\\textwidth', fig.cap='Comparison of expected versus observed flaw counts for each track segment from both the homoegeneous and the hetergeneous models.', fig.show='hold', message=FALSE, fig.pos='H'>>=
 subway.dat$segment.f <- factor(subway.dat$segment, levels=subway.dat$segment[order(-subway.dat$flaws)])
 
 subway.dat.m <- melt(subway.dat[,c(9, 3, 4, 7)], id.vars=c("segment.f"))
@@ -252,7 +256,9 @@ ggplot(data=subway.dat.m) +
   geom_point(aes(x=segment.f, y=value, group=variable, colour=variable, pch=variable)) +
   scale_colour_manual(name="Flaws", values=c("black", "red", "blue"), labels=c("Observed", "Expected Homogeneous", "Expected Heterogeneous")) +
   scale_shape_manual(name="Flaws", values=c(16,15,17), labels=c("Observed", "Expected Homogeneous", "Expected Heterogeneous")) +
-  xlab("Track Segment") + ylab("Count") + theme(legend.position="bottom") +
+  xlab("Track Segment") + ylab("Number of Flaws") + theme(legend.position="bottom") +
   scale_x_discrete(breaks=NULL)
   
 @
+
+Figure~\ref{fig:plot_hetero2} shows the observed number of flaws against the expected number of flaws from the homogeneous and heterogeneous models. The heterogeneous model appears to do a much better job fitting segments with large and small observed flaws than the homogeneous model. 
