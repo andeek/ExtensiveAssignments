@@ -3,7 +3,7 @@ An alternative to the homogeneous model would be to assume that the two differen
 h(y_i|\gamma_i, \lambda_1,\lambda_2,\phi) &= \phi f_1(y_i|\gamma_i, \lambda_1) + (1-\phi)f_2(y_i|\gamma_i, \lambda_2) \\
 &= \phi \frac{(\gamma_i \lambda_1)^{y_i}}{y_i!}e^{-\gamma_i \lambda_1} + (1-\phi) \frac{(\gamma_i \lambda_2)^{y_i}}{y_i!}e^{-\gamma_i \lambda_2}.
 \end{align*}
-where $\lambda_1, \lambda_2 \in (0,\infty)$, $0 < \phi < 1$, and $\gamma_i$ is again the length of track segment $i$. $\lambda_1$ and $\lambda_2$ represent the number of flaws per km for tracks of type A and type B, respectively. $\phi$ represents the overall probability that a section of track is laid with steel type A. Estimation of this model could be achieved through direct maximization of the likelihood, but we will instead use the E-M algorithm and formulate the model as a missing information problem. The E-M algorithm allows for  estimation of $\lambda_1$, $\lambda_2$, and $\phi$, as well as simple estimation of the probability that each individual segment ($i$) is constructed of steel type A. 
+where $\lambda_1, \lambda_2 \in (0,\infty)$, $0 < \phi < 1$, and $\gamma_i$ is again the length of track segment $i$. $\lambda_1$ and $\lambda_2$ represent the number of flaws per km for tracks of type A and type B, respectively. $\phi$ represents the overall probability that a section of track is laid with steel type A. Estimation of this model could be achieved through direct maximization of the likelihood, but we will instead use the EM algorithm and formulate the model as a missing information problem. The EM algorithm allows for  estimation of $\lambda_1$, $\lambda_2$, and $\phi$, as well as simple estimation of the probability that each individual segment ($i$) is constructed of steel type A. 
 
 Define the unobserved random variables $\{Z_{i}\}$ such that 
 \begin{align*}
@@ -124,6 +124,7 @@ A plethora of starting values for the algorithm were explored and all resulted i
 
 \subsection{95\% Wald Theory Intervals}
 To compute standard errors for the Wald intervals, we will first derive the observed information matrix corresponding to the marginal model $h(y_i|\gamma_1,\lambda_1,\lambda_2,\phi)$. Then from expression of the log likelihood as $l(\lambda_1,\lambda_2,\phi) = \sum l_i(\lambda_1,\lambda_2,\phi) \sum \log\{h(y_i|\gamma_1,\boldsymbol \theta)\}$ for $\boldsymbol \theta=(\lambda_1,\lambda_2,\phi)$,
+
 \begin{align*}
 \frac{\partial l(\boldsymbol \theta)}{\partial \theta_j} &= \sum\limits_{i=1}^n \frac{\partial l_i(\boldsymbol \theta)}{\theta_j}\\
 \frac{\partial^2 l(\boldsymbol \theta)}{\partial \theta_j\partial \theta_k} &= \sum\limits_{i=1}^n \frac{\partial^2 l_i(\boldsymbol \theta)}{\partial \theta_j \partial \theta_k}\\ \\
@@ -170,7 +171,7 @@ For $m= 1, \dots, M$,
   \item If $u^{(m)}_i < \hat{\phi}$, simulate $y^{(m)}_i$ from Pois$(\hat{\lambda}_1)$.
   \item If $u^{(m)}_i \geq \hat{\phi}$, simulate $y^{(m)}_i$ from Pois$(\hat{\lambda}_2)$.
   \end{enumerate}
-\item Estimate $\hat{\theta}^{(m)} = (\hat{\lambda}^{(m)}_1$, $\hat{\lambda}^{(m)}_2$, $\hat{\phi}^{(m)}$) using the E-M algorithm with $\mathbf{y}^{(m)}$
+\item Estimate $\hat{\theta}^{(m)} = (\hat{\lambda}^{(m)}_1$, $\hat{\lambda}^{(m)}_2$, $\hat{\phi}^{(m)}$) using the EM algorithm with $\mathbf{y}^{(m)}$
 \end{enumerate}
 
 Then 95\% interval estimates for elements of $\theta$ are $\left(2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.975) \rbrack}, 2\hat{\theta} - \hat{\theta}^{m}_{\lbrack (M+1)(0.025) \rbrack}\right)$. These intervals are shown in Table~\ref{tab:hetero}.
@@ -215,18 +216,18 @@ print(xtable(res, caption="Estimates from EM algorithm and 95\\% Wald and Bootst
 phi.est<-ests[1]
 l1<-ests[2]
 l2<-ests[3]
-subway.dat$exp.counts<-with(subway.dat, probs*l1*subway.dat$length + (1-probs)*l2*subway.dat$length)
-subway.dat$chi_sq <- with(subway.dat, (flaws-exp.counts)^2/exp.counts)
-chi.test <- sum(subway.dat$chi_sq)
+subway.dat$exp.counts2<-with(subway.dat, probs*l1*subway.dat$length + (1-probs)*l2*subway.dat$length)
+subway.dat$chi_sq2 <- with(subway.dat, (flaws-exp.counts2)^2/exp.counts2)
+chi.test2 <- sum(subway.dat$chi_sq2)
 @
 
 \mj{Discuss difference between $\lambda_1$ and $\lambda_2$}
 
-Using the parameter estimates from Table~\ref{tab:hetero} and the estimated probabilities a segment was built with steel type A, expected flaws were computed for each segment of track. These expected counts are reported in Table~\ref{tab:hetero2}, along with individual contributions to the overall Chi-square test statistic of \Sexpr{chi.test} with, which with \Sexpr{nrow(subway.dat) - 1} degress of freedom, has an associated $p$-value of \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This $p$-value indicates that the heterogeneous model results in a substantial improvement over the homogeneous model, discussed previously, in estimation of the number of flaws in subway track segments.
+Using the parameter estimates from Table~\ref{tab:hetero} and the estimated probabilities a segment was built with steel type A, expected flaws were computed for each segment of track. These expected counts are reported in Table~\ref{tab:hetero2}, along with individual contributions to the overall Chi-square test statistic of \Sexpr{chi.test2} with, which with \Sexpr{nrow(subway.dat) - 1} degress of freedom, has an associated $p$-value of \Sexpr{1-pchisq(chi.test2, nrow(subway.dat)-1)}. This $p$-value indicates that the heterogeneous model results in a substantial improvement over the homogeneous model, discussed previously, in estimation of the number of flaws in subway track segments.
 
 {\footnotesize
 <<tab_hetero2, echo=FALSE, results='asis', warning=FALSE>>=
-res <- subway.dat[,-2]
+res <- subway.dat[,c(1,3,7,8,6)]
 names(res) <- c("Segment", "Observed", "Expected", "$\\chi^2_i$", "Pr(A)")
 res <- res[order(res[,2], -res[,3]),]
 left <- res[1:ceiling(nrow(res)/2),]
@@ -239,4 +240,19 @@ Also reported in Table~\ref{tab:hetero2} are estimated probabilities that each t
 
 <<plot_hetero, echo=FALSE, fig.height=4, fig.width=6, out.width='.6\\textwidth', fig.cap='Probabilities of each track segment being built from steel type A compared to the number of flaws in each segment.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
 qplot(x=flaws, y=probs, data=subway.dat)
+@
+
+<<plot_hetero2, echo=FALSE, fig.height=4, fig.width=6, out.width='\\textwidth', fig.cap='Comparison of expected versus observed flaw counts for each track segment from both the homoegeneous and the hetergeneous models.', fig.show='hold', message=FALSE, fig.pos='ht'>>=
+subway.dat$segment.f <- factor(subway.dat$segment, levels=subway.dat$segment[order(-subway.dat$flaws)])
+
+subway.dat.m <- melt(subway.dat[,c(9, 3, 4, 7)], id.vars=c("segment.f"))
+
+ggplot(data=subway.dat.m) +
+  geom_linerange(aes(x=segment.f, ymin=0, ymax=value), data=subset(subway.dat.m, variable == "flaws")) +
+  geom_point(aes(x=segment.f, y=value, group=variable, colour=variable, pch=variable)) +
+  scale_colour_manual(name="Flaws", values=c("black", "red", "blue"), labels=c("Observed", "Expected Homogeneous", "Expected Heterogeneous")) +
+  scale_shape_manual(name="Flaws", values=c(16,15,17), labels=c("Observed", "Expected Homogeneous", "Expected Heterogeneous")) +
+  xlab("Track Segment") + ylab("Count") + theme(legend.position="bottom") +
+  scale_x_discrete(breaks=NULL)
+  
 @
