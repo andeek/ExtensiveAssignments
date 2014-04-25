@@ -21,7 +21,8 @@ subway.dat$exp.counts <- l_hat*subway.dat$length
 subway.dat$chi_sq <- with(subway.dat, (flaws - exp.counts)^2/exp.counts)
 chi.test<-sum(subway.dat$chi_sq)
 @
-To assess the model fit, we use the Pearson Chi-square test which gives a test statistics value of \Sexpr{round(chi.test,4)}, which with \Sexpr{nrow(subway.dat) - 1} degrees of freedom yields a $p$-value of nearly \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This test indicates that the constant poisson model cannot adequately represent the number of flaws in a subway tracks and a more flexible model is required. We can investigate whether there are particular sections of track that fit poorly by looking at the individual contributions to the Chi-square test statistic. See Table~\ref{tab:homo} for details.
+To assess the model fit, we use the Pearson Chi-square test. The test statistic is \Sexpr{round(chi.test,4)}, which, with \Sexpr{nrow(subway.dat) - 1} degrees of freedom, yields a $p$-value of nearly \Sexpr{1-pchisq(chi.test, nrow(subway.dat)-1)}. This test indicates that the constant poisson model cannot adequately represent the number of flaws in a subway tracks and a more flexible model is required. We can investigate whether there are particular sections of track that fit poorly by looking at the individual contributions to the Chi-square test statistic. See Table~\ref{tab:homo} for details.
+
 {\footnotesize
 <<tab_homo, echo=FALSE, results='asis', warning=FALSE>>=
 res <- subway.dat
@@ -37,6 +38,6 @@ print(xtable(cbindPad(left, right), label='tab:homo', caption="Observed and expe
 
 \newpage
 
-The highest contributions come from segments with zero and one flaw, as well as contributions from segments with 15 and 18 flaws. These segments account for \Sexpr{perc.chi}\% of the total $\chi^2$ test statistic value. %We then hypothesize that these two groups may correspond to flaws from type A and type B steel tracks, respectively.  
+The highest contributions come from segments with zero and one flaw, and from segments with 15 and 18 flaws. These segments account for \Sexpr{perc.chi}\% of the total $\chi^2$ test statistic value. %We then hypothesize that these two groups may correspond to flaws from type A and type B steel tracks, respectively.  
 
 

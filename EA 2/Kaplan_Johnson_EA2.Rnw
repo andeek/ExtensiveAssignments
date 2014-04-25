@@ -62,11 +62,14 @@ subway.dat <- read.table("data/subwaydat.txt", header=TRUE, colClasses="numeric"
 
 \clearpage
 \begin{appendices}
-\section{Code Appendix: EM Algorithm}
+\subsection*{EM Algorithm}
 <<code_appendix_EM, echo=FALSE>>=
 read_chunk("code/em_algorithm.R", labels = 'EM-source')
 @
 <<EM-source, eval=FALSE>>=
+@
+\subsection*{Bootstrap Intervals}
+<<Boot-source, eval=FALSE, ref.label="boot_hetero", echo=TRUE>>=
 @
 \end{appendices}
 \end{document}

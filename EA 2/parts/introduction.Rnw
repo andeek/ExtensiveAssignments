@@ -14,5 +14,5 @@ names(res) <- c("No. of Flaws", "Number of Sections")
 print(xtable(t(res), label="tab:datasummary", caption="Frequency of flaws in subway track sections."), include.colnames=FALSE)
 @
 
-From the summaries, we can see the frequency of zero and one flaw sections is fairly high but decreases as the number of flaws per section increases. However, there appears to be a second smaller peak around 15 flaws. This could be random variation, but based on our assumption from the problem statement, we may take this as an indication that a model that allows for different flaw rates for type A and type B steel is applicable.
+From the summaries, we can see that the frequency of zero and one flaw sections is fairly high but decreases as the number of flaws per section increases. However, there appears to be a second smaller peak around 15 flaws. This could be random variation, but based on our assumption from the problem statement, we may take this as an indication that a model that allows for different flaw rates for type A and type B steel is applicable.
 
